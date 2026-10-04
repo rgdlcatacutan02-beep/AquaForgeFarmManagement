@@ -51,4 +51,91 @@ class ProfilePaymentTest extends TestCase
 
         Storage::disk('public')->assertExists($user->gcash_qr_path);
     }
+
+    public function test_admin_can_upload_custom_farm_logo_and_change_farm_name(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create([
+            'farm_name' => 'Initial AquaForge Farm',
+            'farm_logo_path' => null,
+            'role' => 'admin',
+        ]);
+
+        $logoFile = UploadedFile::fake()->image('my_farm_crest.png', 500, 500);
+
+        $response = $this->actingAs($user)->patch(route('profile.payment.update'), [
+            'farm_name' => 'Blue Lagoon Guppy Farm',
+            'farm_location' => 'Rizal, Philippines',
+            'farm_logo' => $logoFile,
+        ]);
+
+        $response->assertRedirect(route('profile.edit'));
+        $response->assertSessionHas('success');
+
+        $user->refresh();
+        $this->assertEquals('Blue Lagoon Guppy Farm', $user->farm_name);
+        $this->assertNotNull($user->farm_logo_path);
+        Storage::disk('public')->assertExists($user->farm_logo_path);
+
+        // Check welcome page: displays custom name and logo, locked with Powered by AquaForge
+        $welcomeRes = $this->get(url('/'));
+        $welcomeRes->assertOk();
+        $welcomeRes->assertSee('Blue Lagoon Guppy Farm');
+        $welcomeRes->assertSee($user->farm_logo_url);
+        $welcomeRes->assertSee('Powered by AquaForge System');
+
+        // Check catalog index: displays custom name and logo with Powered by AquaForge watermark
+        $catalogRes = $this->get(route('catalog.index'));
+        $catalogRes->assertOk();
+        $catalogRes->assertSee('Blue Lagoon Guppy Farm');
+        $catalogRes->assertSee($user->farm_logo_url);
+        $catalogRes->assertSee('Powered by AquaForge');
+
+        // Check admin sidebar: displays custom logo and Powered by AquaForge subtitle
+        $dashRes = $this->actingAs($user)->get(route('dashboard'));
+        $dashRes->assertOk();
+        $dashRes->assertSee('Blue Lagoon Guppy Farm');
+        $dashRes->assertSee($user->farm_logo_url);
+        $dashRes->assertSee('Powered by AquaForge');
+    }
+
+    public function test_admin_can_remove_custom_farm_logo_to_revert_to_default_crest(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create([
+            'farm_name' => 'AquaForge Elite',
+            'farm_logo_path' => 'farm_logos/existing_logo.png',
+            'role' => 'admin',
+        ]);
+        Storage::disk('public')->put('farm_logos/existing_logo.png', 'fake image content');
+
+        $response = $this->actingAs($user)->patch(route('profile.payment.update'), [
+            'farm_name' => 'AquaForge Elite',
+            'remove_farm_logo' => '1',
+        ]);
+
+        $response->assertRedirect(route('profile.edit'));
+        $response->assertSessionHas('success');
+
+        $user->refresh();
+        $this->assertNull($user->farm_logo_path);
+        Storage::disk('public')->assertMissing('farm_logos/existing_logo.png');
+    }
+
+    public function test_farm_logo_must_be_a_valid_image(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create(['role' => 'admin']);
+        $badFile = UploadedFile::fake()->create('document.pdf', 500, 'application/pdf');
+
+        $response = $this->actingAs($user)->patch(route('profile.payment.update'), [
+            'farm_name' => 'Test Farm',
+            'farm_logo' => $badFile,
+        ]);
+
+        $response->assertSessionHasErrors('farm_logo');
+    }
 }

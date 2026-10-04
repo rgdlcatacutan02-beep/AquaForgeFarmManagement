@@ -37,10 +37,20 @@
     <!-- HEADER -->
     <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-            <a href="{{ route('catalog.index') }}" class="inline-flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white transition">
-                <i data-lucide="arrow-left" class="w-4 h-4 text-cyan-400"></i>
-                <span>Back to Full Stocklist</span>
-            </a>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('catalog.index') }}" class="inline-flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white transition">
+                    <i data-lucide="arrow-left" class="w-4 h-4 text-cyan-400"></i>
+                    <span>Back to Full Stocklist</span>
+                </a>
+                <span class="text-slate-700 hidden sm:inline">&bull;</span>
+                <div class="hidden sm:flex items-center gap-2">
+                    @if($owner && $owner->farm_logo_url)
+                        <img src="{{ $owner->farm_logo_url }}" alt="Logo" class="w-5 h-5 object-contain rounded">
+                    @endif
+                    <span class="text-xs font-bold text-slate-300">{{ $owner->farm_name ?? 'AquaForge Farm' }}</span>
+                    <span class="text-[9px] text-cyan-400 font-mono tracking-wider uppercase font-semibold">Powered by AquaForge</span>
+                </div>
+            </div>
             <div class="flex items-center gap-2">
                 <button type="button" @click="cartOpen = true" 
                         class="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/70 text-xs font-bold transition shadow-sm">
@@ -259,9 +269,13 @@
                 <!-- Breeder contact and payment info -->
                 <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-2">
                     <div class="flex items-center justify-between text-slate-300">
-                        <span class="font-bold flex items-center gap-1.5">
-                            <i data-lucide="store" class="w-3.5 h-3.5 text-cyan-400"></i>
-                            {{ $owner->farm_name ?? 'AquaForge Farm' }}
+                        <span class="font-bold flex items-center gap-2">
+                            @if($owner && $owner->farm_logo_url)
+                                <img src="{{ $owner->farm_logo_url }}" alt="Logo" class="w-5 h-5 object-contain rounded p-0.5 bg-slate-950 border border-slate-700">
+                            @else
+                                <i data-lucide="store" class="w-3.5 h-3.5 text-cyan-400"></i>
+                            @endif
+                            <span>{{ $owner->farm_name ?? 'AquaForge Farm' }}</span>
                         </span>
                         <span>{{ $owner->farm_location ?? 'Philippines' }}</span>
                     </div>
@@ -311,7 +325,7 @@
     </main>
 
     <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }}. Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span>.</p>
+        <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }} &bull; Powered by <span class="text-cyan-400 font-semibold">AquaForge System</span> &bull; Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span></p>
     </footer>
 
     @include('catalog.partials.cart')

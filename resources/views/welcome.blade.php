@@ -16,18 +16,28 @@
         <!-- Top Navigation (Clean Public View - No Register/Login buttons) -->
         <header class="max-w-7xl mx-auto w-full px-6 py-6 flex items-center justify-between">
             <a href="{{ url('/') }}" class="flex items-center gap-3 group">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 via-teal-500 to-emerald-400 p-0.5 shadow-lg shadow-cyan-950/60 group-hover:scale-105 transition transform">
-                    <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-cyan-400">
-                        <i data-lucide="waves" class="w-6 h-6"></i>
+                @if($owner && $owner->farm_logo_url)
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 via-teal-500 to-emerald-400 p-0.5 shadow-lg shadow-cyan-950/60 group-hover:scale-105 transition transform flex-shrink-0">
+                        <img src="{{ $owner->farm_logo_url }}" alt="{{ $owner->farm_name ?? 'Farm' }} Logo" class="w-full h-full object-contain rounded-[14px] bg-slate-950 p-1">
                     </div>
-                </div>
+                @else
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-600 via-teal-500 to-emerald-400 p-0.5 shadow-lg shadow-cyan-950/60 group-hover:scale-105 transition transform flex-shrink-0">
+                        <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-cyan-400">
+                            <i data-lucide="waves" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                @endif
                 <div>
                     <div class="text-lg font-black text-white tracking-wide group-hover:text-cyan-300 transition-colors">
                         {{ $owner->farm_name ?? 'AquaForge Farm' }}
                     </div>
-                    <div class="text-[11px] text-cyan-400 font-semibold flex items-center gap-1">
-                        <i data-lucide="map-pin" class="w-3 h-3 text-cyan-400"></i>
-                        <span>{{ $owner->farm_location ?? 'Philippines' }}</span>
+                    <div class="text-[11px] text-cyan-400 font-semibold flex items-center gap-2">
+                        <span class="flex items-center gap-1">
+                            <i data-lucide="map-pin" class="w-3 h-3 text-cyan-400"></i>
+                            <span>{{ $owner->farm_location ?? 'Philippines' }}</span>
+                        </span>
+                        <span class="text-slate-600">&bull;</span>
+                        <span class="text-[10px] text-cyan-300/80 font-mono uppercase tracking-wider">Powered by AquaForge</span>
                     </div>
                 </div>
             </a>
@@ -56,17 +66,28 @@
             
             <!-- Farm Logo Crest -->
             <div class="relative mb-6">
-                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-tr from-cyan-500 via-teal-400 to-emerald-400 p-1 shadow-2xl shadow-cyan-500/20 animate-pulse">
-                    <div class="w-full h-full bg-slate-950 rounded-[22px] flex flex-col items-center justify-center text-cyan-400 p-4">
-                        <i data-lucide="fish" class="w-12 h-12 text-cyan-400"></i>
-                        <span class="text-[9px] font-black tracking-widest text-teal-300 uppercase mt-1">EST. 2026</span>
+                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-tr from-cyan-500 via-teal-400 to-emerald-400 p-1 shadow-2xl shadow-cyan-500/20">
+                    <div class="w-full h-full bg-slate-950 rounded-[22px] flex flex-col items-center justify-center text-cyan-400 p-3 overflow-hidden">
+                        @if($owner && $owner->farm_logo_url)
+                            <img src="{{ $owner->farm_logo_url }}" alt="{{ $owner->farm_name ?? 'Farm' }} Logo" class="w-full h-full object-contain p-1">
+                        @else
+                            <i data-lucide="fish" class="w-12 h-12 text-cyan-400"></i>
+                            <span class="text-[9px] font-black tracking-widest text-teal-300 uppercase mt-1">EST. 2026</span>
+                        @endif
                     </div>
                 </div>
                 <div class="absolute -bottom-2 inset-x-0 flex justify-center">
-                    <span class="px-3 py-0.5 rounded-full bg-emerald-950 border border-emerald-500 text-emerald-300 text-[10px] font-extrabold uppercase tracking-wider shadow">
+                    <span class="px-3 py-0.5 rounded-full bg-emerald-950 border border-emerald-500 text-emerald-300 text-[10px] font-extrabold uppercase tracking-wider shadow flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                         Live Stock Available
                     </span>
                 </div>
+            </div>
+
+            <!-- Platform Powered-by pill -->
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-4 shadow-sm">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>Powered by AquaForge System</span>
             </div>
 
             <!-- Farm Branding Titles -->
@@ -179,7 +200,7 @@
         <footer class="py-6 border-t border-slate-900 bg-slate-950/80 text-xs text-slate-500">
             <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
-                    {{ $owner->farm_name ?? 'AquaForge' }} &copy; {{ date('Y') }} &bull; Aquatic Farm & Breeding Management System &bull; Built with pride by <span class="text-cyan-400 font-semibold">rgdlcTech</span>
+                    {{ $owner->farm_name ?? 'AquaForge' }} &copy; {{ date('Y') }} &bull; Aquatic Farm & Breeding Management System &bull; Powered by <span class="text-cyan-400 font-semibold">AquaForge System</span> &bull; Built with pride by <span class="text-cyan-400 font-semibold">rgdlcTech</span>
                 </div>
 
                 <!-- Hidden Admin Portal Access -->

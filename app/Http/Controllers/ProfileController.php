@@ -67,6 +67,8 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'farm_name' => 'nullable|string|max:100',
             'farm_location' => 'nullable|string|max:150',
+            'farm_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:4096',
+            'remove_farm_logo' => 'nullable|boolean',
             'messenger_username' => 'nullable|string|max:100',
             'facebook_page' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:50',
@@ -81,6 +83,19 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
+        // Handle Farm Logo upload or removal
+        if ($request->boolean('remove_farm_logo')) {
+            if ($user->farm_logo_path) {
+                Storage::disk('public')->delete($user->farm_logo_path);
+            }
+            $validated['farm_logo_path'] = null;
+        } elseif ($request->hasFile('farm_logo')) {
+            if ($user->farm_logo_path) {
+                Storage::disk('public')->delete($user->farm_logo_path);
+            }
+            $validated['farm_logo_path'] = $request->file('farm_logo')->store('farm_logos', 'public');
+        }
+
         if ($request->hasFile('gcash_qr')) {
             if ($user->gcash_qr_path) {
                 Storage::disk('public')->delete($user->gcash_qr_path);
@@ -88,9 +103,9 @@ class ProfileController extends Controller
             $validated['gcash_qr_path'] = $request->file('gcash_qr')->store('qrcodes', 'public');
         }
 
-        unset($validated['gcash_qr']);
+        unset($validated['farm_logo'], $validated['remove_farm_logo'], $validated['gcash_qr']);
         $user->update($validated);
 
-        return Redirect::route('profile.edit')->with('success', 'Farm profile, Facebook Messenger, and payment settings updated successfully.');
+        return Redirect::route('profile.edit')->with('success', 'Farm branding, logo, Messenger, and payment settings updated successfully.');
     }
 }

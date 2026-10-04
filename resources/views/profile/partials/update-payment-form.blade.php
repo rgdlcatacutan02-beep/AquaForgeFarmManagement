@@ -24,26 +24,80 @@
         @csrf
         @method('patch')
 
-        <!-- Farm Identity -->
-        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-4">
-            <div class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
-                <i data-lucide="building" class="w-3.5 h-3.5"></i>
-                <span>Farm Identity & Location</span>
+        <!-- Farm Identity & Custom Branding -->
+        <div class="bg-slate-950/60 p-5 rounded-xl border border-cyan-800/40 space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                <div class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-cyan-400"></i>
+                    <span>Farm Identity &amp; Custom Logo</span>
+                </div>
+                <!-- Platform Security Badge -->
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-900 border border-cyan-900/60 text-[10px] font-mono text-cyan-300">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>Powered by AquaForge System</span>
+                </span>
             </div>
+
+            <!-- Farm Logo Upload & Preview -->
+            <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col sm:flex-row items-center gap-5">
+                <div class="relative flex-shrink-0">
+                    @if ($user->farm_logo_url)
+                        <img src="{{ $user->farm_logo_url }}" alt="{{ $user->farm_name }}" 
+                             class="w-20 h-20 rounded-2xl object-cover bg-slate-950 border-2 border-cyan-500/50 shadow-lg shadow-cyan-950">
+                    @else
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-cyan-600 to-teal-500 p-0.5 shadow-lg shadow-cyan-950 flex items-center justify-center">
+                            <div class="w-full h-full bg-slate-950 rounded-[14px] flex flex-col items-center justify-center text-cyan-400">
+                                <i data-lucide="waves" class="w-8 h-8 text-cyan-400"></i>
+                                <span class="text-[8px] font-mono font-bold text-teal-300 uppercase mt-0.5">Default</span>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                <div class="flex-1 min-w-0 space-y-2 text-center sm:text-left">
+                    <label class="block text-xs font-bold text-white">Upload Custom Farm Crest / Logo</label>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">
+                        Customize your farm's visual brand across the public welcome page, live stocklist catalog, and printed receipts. Recommended square ratio (PNG, JPG, SVG, WebP, max 4MB).
+                    </p>
+                    <div class="pt-1 flex flex-col sm:flex-row items-center gap-3">
+                        <input type="file" name="farm_logo" accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                               class="text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-cyan-950 file:text-cyan-300 hover:file:bg-cyan-900 transition">
+                        @if ($user->farm_logo_path)
+                            <label class="inline-flex items-center text-xs text-rose-400 hover:text-rose-300 cursor-pointer">
+                                <input type="checkbox" name="remove_farm_logo" value="1" class="rounded bg-slate-950 border-slate-700 text-rose-500 focus:ring-0 mr-1.5">
+                                <span>Revert to default AquaForge crest</span>
+                            </label>
+                        @endif
+                    </div>
+                    <x-input-error class="mt-1" :messages="$errors->get('farm_logo')" />
+                </div>
+            </div>
+
+            <!-- Farm Name & Location Fields -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label for="farm_name" class="block text-xs font-medium text-slate-300">Farm / Brand Name</label>
-                    <input type="text" id="farm_name" name="farm_name" value="{{ old('farm_name', $user->farm_name ?? 'AquaForge Farm') }}" 
-                           placeholder="e.g. AquaForge Aquatic Studio"
-                           class="mt-1 block w-full rounded-lg bg-slate-900 border border-slate-700 text-white text-xs px-3 py-2 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500">
+                    <label for="farm_name" class="block text-xs font-semibold text-slate-300">Farm / Brand Name <span class="text-rose-400">*</span></label>
+                    <input type="text" id="farm_name" name="farm_name" value="{{ old('farm_name', $user->farm_name ?? 'AquaForge Farm') }}" required
+                           placeholder="e.g. RDLC Guppy & Aquatic Farm"
+                           class="mt-1 block w-full rounded-lg bg-slate-900 border border-slate-700 text-white text-xs px-3.5 py-2.5 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500">
+                    <span class="text-[10px] text-slate-500 mt-1 block">Your custom farm brand name displayed on your catalog and invoices.</span>
                     <x-input-error class="mt-1" :messages="$errors->get('farm_name')" />
                 </div>
                 <div>
-                    <label for="farm_location" class="block text-xs font-medium text-slate-300">Location (City / Province)</label>
-                    <input type="text" id="farm_location" name="farm_location" value="{{ old('farm_location', $user->farm_location ?? 'Quezon City, Metro Manila') }}" 
+                    <label for="farm_location" class="block text-xs font-semibold text-slate-300">Location (City / Province)</label>
+                    <input type="text" id="farm_location" name="farm_location" value="{{ old('farm_location', $user->farm_location ?? 'Quezon City, Philippines') }}" 
                            placeholder="e.g. Quezon City, Metro Manila"
-                           class="mt-1 block w-full rounded-lg bg-slate-900 border border-slate-700 text-white text-xs px-3 py-2 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500">
+                           class="mt-1 block w-full rounded-lg bg-slate-900 border border-slate-700 text-white text-xs px-3.5 py-2.5 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500">
+                    <span class="text-[10px] text-slate-500 mt-1 block">Displayed on your catalog so customers know where fish will ship from.</span>
                     <x-input-error class="mt-1" :messages="$errors->get('farm_location')" />
+                </div>
+            </div>
+
+            <!-- AquaForge Security & Co-Branding Watermark Notice -->
+            <div class="p-3 rounded-lg bg-slate-900/60 border border-slate-800 text-[11px] text-slate-400 flex items-start gap-2.5 leading-relaxed">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5"></i>
+                <div>
+                    <strong class="text-slate-200">AquaForge Architecture Security:</strong> You have full control over your personalized Farm Name and Logo. To maintain system authenticity and software licensing, your site remains permanently powered and verified by the <strong>AquaForge System Engine &copy; 2026</strong>.
                 </div>
             </div>
         </div>

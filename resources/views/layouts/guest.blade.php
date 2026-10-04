@@ -17,20 +17,31 @@
     </head>
     <body class="min-h-full bg-slate-950 text-slate-100 antialiased flex flex-col justify-center items-center p-6 selection:bg-cyan-500 selection:text-white">
         <div class="w-full max-w-md space-y-6">
+            @php
+                $adminUser = \App\Models\User::first();
+                $farmName = $adminUser?->farm_name ?: 'AquaForge';
+                $farmLogo = $adminUser?->farm_logo_url;
+            @endphp
             <div class="text-center">
                 <a href="{{ url('/') }}" class="inline-flex flex-col items-center gap-2 group">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-600 via-teal-500 to-emerald-400 p-0.5 shadow-xl shadow-cyan-950/60 group-hover:scale-105 transition transform">
-                        <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-cyan-400">
-                            <i data-lucide="waves" class="w-7 h-7"></i>
+                    @if($farmLogo)
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-600 via-teal-500 to-emerald-400 p-0.5 shadow-xl shadow-cyan-950/60 group-hover:scale-105 transition transform">
+                            <img src="{{ $farmLogo }}" alt="{{ $farmName }} Logo" class="w-full h-full object-contain bg-slate-950 rounded-[14px] p-1.5">
                         </div>
-                    </div>
+                    @else
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-600 via-teal-500 to-emerald-400 p-0.5 shadow-xl shadow-cyan-950/60 group-hover:scale-105 transition transform">
+                            <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-cyan-400">
+                                <i data-lucide="waves" class="w-7 h-7"></i>
+                            </div>
+                        </div>
+                    @endif
                     <div class="mt-2 text-xl font-black text-white tracking-wide">
-                        AquaForge
+                        {{ $farmName }}
                     </div>
                 </a>
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 mt-2 rounded-full bg-slate-900 border border-slate-800 text-[11px] text-cyan-400 font-mono">
-                    <i data-lucide="lock" class="w-3 h-3 text-cyan-400"></i>
-                    <span>Farm Admin Portal</span>
+                    <i data-lucide="shield-check" class="w-3 h-3 text-cyan-400"></i>
+                    <span>Powered by AquaForge &bull; Admin Portal</span>
                 </div>
             </div>
 

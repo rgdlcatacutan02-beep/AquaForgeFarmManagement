@@ -1,11 +1,24 @@
 <aside class="flex flex-col flex-shrink-0 w-64 bg-slate-900 border-r border-slate-800 text-slate-300 min-h-screen">
+    @php
+        $sidebarUser = auth()->user();
+        $farmName = $sidebarUser?->farm_name ?: 'AquaForge';
+        $farmLogo = $sidebarUser?->farm_logo_url;
+    @endphp
     <!-- Brand Header -->
-    <div class="flex items-center gap-3 px-5 py-5 border-b border-slate-800/80 bg-slate-950/40">
-        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
-            <x-application-logo class="w-9 h-9 flex-shrink-0 shadow-md shadow-cyan-900/40" />
-            <div>
-                <div class="text-base font-bold text-white tracking-wide group-hover:text-cyan-400 transition-colors">AquaForge</div>
-                <div class="text-[10px] text-cyan-400/90 font-medium tracking-tight">Aquatic Farm & Breeding Management System</div>
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-800/80 bg-slate-950/40">
+        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group min-w-0 w-full">
+            @if($farmLogo)
+                <img src="{{ $farmLogo }}" alt="{{ $farmName }} Logo" class="w-10 h-10 object-contain rounded-lg p-1 bg-slate-900 border border-cyan-500/30 shadow-md shadow-cyan-950/50 flex-shrink-0">
+            @else
+                <x-application-logo class="w-9 h-9 flex-shrink-0 shadow-md shadow-cyan-900/40" />
+            @endif
+            <div class="min-w-0 flex-1">
+                <div class="text-sm font-bold text-white tracking-wide group-hover:text-cyan-400 transition-colors truncate" title="{{ $farmName }}">{{ $farmName }}</div>
+                <div class="text-[9px] text-cyan-400/90 font-medium tracking-tight truncate">Aquatic Farm & Breeding Management System</div>
+                <div class="text-[9px] text-cyan-300 font-semibold tracking-wider uppercase flex items-center gap-1 mt-0.5">
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <span class="truncate">Powered by AquaForge</span>
+                </div>
             </div>
         </a>
     </div>
@@ -133,6 +146,14 @@
             </a>
         </div>
     </nav>
+
+    <!-- Platform Engine Watermark -->
+    <div class="px-4 py-2 border-t border-slate-800/60 bg-slate-950/80 text-center">
+        <div class="text-[10px] text-slate-500 font-mono tracking-tight flex items-center justify-center gap-1.5">
+            <i data-lucide="shield-check" class="w-3 h-3 text-cyan-500/70"></i>
+            <span>AquaForge System &bull; rgdlcTech</span>
+        </div>
+    </div>
 
     <!-- User Profile Bottom Bar -->
     <div class="p-3 border-t border-slate-800/80 bg-slate-950/40">

@@ -40,17 +40,25 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <a href="{{ route('catalog.index') }}" class="flex items-center gap-2.5">
-                    <span class="p-2 rounded-xl bg-cyan-950 text-cyan-400 border border-cyan-800 shadow-inner">
-                        <i data-lucide="fish" class="w-5 h-5"></i>
-                    </span>
+                    @if($owner && $owner->farm_logo_url)
+                        <img src="{{ $owner->farm_logo_url }}" alt="{{ $owner->farm_name ?? 'Farm' }} Logo" class="w-10 h-10 object-contain rounded-xl p-1 bg-slate-900 border border-cyan-800/80 shadow-md">
+                    @else
+                        <span class="p-2 rounded-xl bg-cyan-950 text-cyan-400 border border-cyan-800 shadow-inner">
+                            <i data-lucide="fish" class="w-5 h-5"></i>
+                        </span>
+                    @endif
                     <div>
                         <div class="text-sm sm:text-base font-extrabold text-white tracking-tight flex items-center gap-2">
                             <span>{{ $owner->farm_name ?? 'AquaForge Farm' }}</span>
                             <span class="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 font-semibold">Live Stock</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 flex items-center gap-1.5">
-                            <i data-lucide="map-pin" class="w-3 h-3 text-cyan-400"></i>
-                            <span>{{ $owner->farm_location ?? 'Philippines' }}</span>
+                        <p class="text-[11px] text-slate-400 flex items-center gap-2">
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="map-pin" class="w-3 h-3 text-cyan-400"></i>
+                                <span>{{ $owner->farm_location ?? 'Philippines' }}</span>
+                            </span>
+                            <span class="text-slate-600">&bull;</span>
+                            <span class="text-[10px] text-cyan-400 font-mono tracking-tight font-semibold">Powered by AquaForge</span>
                         </p>
                     </div>
                 </a>
@@ -498,7 +506,7 @@
 
     <!-- FOOTER -->
     <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }}. Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span>.</p>
+        <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }} &bull; Powered by <span class="text-cyan-400 font-semibold">AquaForge System</span> &bull; Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span></p>
     </footer>
 
     @include('catalog.partials.cart')

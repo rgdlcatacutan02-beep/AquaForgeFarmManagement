@@ -16,6 +16,7 @@ use Illuminate\Notifications\Notifiable;
     'password',
     'farm_name',
     'farm_location',
+    'farm_logo_path',
     'gcash_name',
     'gcash_number',
     'gcash_qr_path',
@@ -44,6 +45,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getFarmLogoUrlAttribute(): ?string
+    {
+        return $this->farm_logo_path ? asset('storage/' . $this->farm_logo_path) : null;
     }
 
     public function getGcashQrUrlAttribute(): ?string

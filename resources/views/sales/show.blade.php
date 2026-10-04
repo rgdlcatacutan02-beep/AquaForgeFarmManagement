@@ -29,17 +29,31 @@
     <!-- Printable Invoice Container -->
     <div class="max-w-3xl mx-auto">
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 sm:p-8 shadow-sm space-y-6 print:border-none print:p-0 print:bg-white print:text-black">
+            @php
+                $farmUser = auth()->user() ?? \App\Models\User::first();
+                $farmName = $farmUser?->farm_name ?: 'AQUAFORGE';
+                $farmLogo = $farmUser?->farm_logo_url;
+            @endphp
             <!-- Brand & Invoice Header -->
             <div class="flex flex-col sm:flex-row justify-between items-start gap-4 pb-6 border-b border-slate-800 print:border-slate-300">
                 <div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-cyan-600 flex items-center justify-center text-white font-bold text-base">
-                            <i data-lucide="waves" class="w-5 h-5"></i>
+                    <div class="flex items-center gap-3">
+                        @if($farmLogo)
+                            <img src="{{ $farmLogo }}" alt="{{ $farmName }} Logo" class="w-10 h-10 object-contain rounded-lg p-1 bg-slate-800 print:bg-white border border-slate-700 print:border-slate-300">
+                        @else
+                            <div class="w-8 h-8 rounded-lg bg-cyan-600 flex items-center justify-center text-white font-bold text-base">
+                                <i data-lucide="waves" class="w-5 h-5"></i>
+                            </div>
+                        @endif
+                        <div>
+                            <span class="text-lg font-black tracking-tight text-white print:text-slate-900 uppercase">{{ $farmName }}</span>
+                            <div class="text-[10px] text-cyan-400 print:text-cyan-700 font-bold uppercase tracking-wider">
+                                Powered by AquaForge System
+                            </div>
                         </div>
-                        <span class="text-lg font-black tracking-tight text-white print:text-slate-900">AQUAFORGE</span>
                     </div>
-                    <p class="text-xs text-slate-400 print:text-slate-600 mt-1">Aquatic Husbandry & Selective Breeding Operations</p>
-                    <p class="text-[11px] text-slate-500 print:text-slate-500">Official Sales & Livestock Transfer Receipt</p>
+                    <p class="text-xs text-slate-400 print:text-slate-600 mt-1.5">{{ $farmUser?->farm_location ?? 'Aquatic Husbandry & Selective Breeding Operations' }}</p>
+                    <p class="text-[11px] text-slate-500 print:text-slate-500">Official Sales & Livestock Transfer Receipt &bull; Built by rgdlcTech</p>
                 </div>
 
                 <div class="sm:text-right space-y-1">
@@ -215,6 +229,15 @@
                     </div>
                 </div>
             @endif
+            <!-- Official Invoice System Stamp -->
+            <div class="pt-6 border-t border-slate-800 print:border-slate-300 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] text-slate-500 print:text-slate-500 font-mono">
+                <div>
+                    {{ $farmName }} &bull; Live Livestock Health Condition Guarantee
+                </div>
+                <div>
+                    POWERED BY AQUAFORGE SYSTEM &bull; rgdlcTech
+                </div>
+            </div>
         </div>
     </div>
 </x-app-layout>
