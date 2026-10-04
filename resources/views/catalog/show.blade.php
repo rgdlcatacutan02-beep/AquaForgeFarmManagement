@@ -53,7 +53,7 @@
                         <img src="{{ $owner->farm_logo_url }}" alt="Logo" class="w-5 h-5 object-contain rounded group-hover:scale-105 transition">
                     @endif
                     <span class="text-xs font-bold text-slate-300 group-hover:text-cyan-300 transition">{{ $owner->farm_name ?? 'AquaForge Farm' }}</span>
-                    <span class="text-[9px] text-cyan-400 font-mono tracking-wider uppercase font-semibold">Powered by AquaForge</span>
+                    
                 </a>
             </div>
             <div class="flex items-center gap-2">
@@ -342,7 +342,7 @@
     </main>
 
     <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }} &bull; Powered by <span class="text-cyan-400 font-semibold">AquaForge System</span> &bull; Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span></p>
+        <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }} &bull; <span class="text-cyan-400 font-semibold">Powered by AquaForge System</span> &bull; Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span></p>
     </footer>
 
         <!-- Mobile Floating Cart Pill -->

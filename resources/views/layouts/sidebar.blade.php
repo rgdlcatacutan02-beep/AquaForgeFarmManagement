@@ -17,7 +17,7 @@
                 <div class="text-[9px] text-cyan-400/90 font-medium tracking-tight truncate">Aquatic Farm & Breeding Management System</div>
                 <div class="text-[9px] text-cyan-300 font-semibold tracking-wider uppercase flex items-center gap-1 mt-0.5">
                     <span class="inline-block w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                    <span class="truncate">Powered by AquaForge</span>
+                    <span class="truncate">Farm Management</span>
                 </div>
             </div>
         </a>
@@ -164,7 +164,7 @@
     <div class="px-4 py-2 border-t border-slate-800/60 bg-slate-950/80 text-center flex-shrink-0">
         <div class="text-[10px] text-slate-500 font-mono tracking-tight flex items-center justify-center gap-1.5">
             <i data-lucide="shield-check" class="w-3 h-3 text-cyan-500/70"></i>
-            <span>AquaForge System &bull; rgdlcTech</span>
+            <span>Powered by AquaForge &bull; rgdlcTech</span>
         </div>
     </div>
 

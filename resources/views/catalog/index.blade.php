@@ -62,8 +62,7 @@
                                 <i data-lucide="map-pin" class="w-3 h-3 text-cyan-400 flex-shrink-0"></i>
                                 <span class="truncate">{{ $owner->farm_location ?? 'Philippines' }}</span>
                             </span>
-                            <span class="text-slate-600 hidden sm:inline">&bull;</span>
-                            <span class="text-[10px] text-cyan-400 font-mono tracking-tight font-semibold hidden sm:inline">Powered by AquaForge</span>
+
                         </p>
                     </div>
                 </a>
@@ -508,7 +507,7 @@
 
     <!-- FOOTER -->
     <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }} &bull; Powered by <span class="text-cyan-400 font-semibold">AquaForge System</span> &bull; Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span></p>
+        <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }} &bull; <span class="text-cyan-400 font-semibold">Powered by AquaForge System</span> &bull; Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span></p>
     </footer>
 
         <!-- Mobile Floating Cart Pill -->

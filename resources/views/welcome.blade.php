@@ -41,8 +41,7 @@
                             <i data-lucide="map-pin" class="w-3 h-3 text-cyan-400"></i>
                             <span>{{ $owner->farm_location ?? 'Philippines' }}</span>
                         </span>
-                        <span class="text-slate-600">&bull;</span>
-                        <span class="text-[10px] text-cyan-300/80 font-mono uppercase tracking-wider">Powered by AquaForge</span>
+
                     </div>
                 </div>
             </a>
@@ -91,11 +90,7 @@
                 </div>
             </div>
 
-            <!-- Platform Powered-by pill -->
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-4 shadow-sm">
-                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i>
-                <span>Powered by AquaForge System</span>
-            </div>
+
 
             <!-- Farm Branding Titles -->
             <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight mt-3 break-words">
@@ -198,7 +193,7 @@
         <footer class="py-6 border-t border-slate-900 bg-slate-950/80 text-xs text-slate-500">
             <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
-                    {{ $owner->farm_name ?? 'AquaForge' }} &copy; {{ date('Y') }} &bull; Aquatic Farm & Breeding Management System &bull; Powered by <span class="text-cyan-400 font-semibold">AquaForge System</span> &bull; Built with pride by <span class="text-cyan-400 font-semibold">rgdlcTech</span>
+                    {{ $owner->farm_name ?? 'AquaForge' }} &copy; {{ date('Y') }} &bull; Aquatic Farm & Breeding Management System &bull; <span class="text-cyan-400 font-semibold">Powered by AquaForge System</span> &bull; Built with pride by <span class="text-cyan-400 font-semibold">rgdlcTech</span>
                 </div>
 
                 <!-- Hidden Admin Portal Access -->
