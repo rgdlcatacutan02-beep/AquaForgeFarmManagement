@@ -27,6 +27,7 @@ use Illuminate\Notifications\Notifiable;
     'messenger_username',
     'facebook_page',
     'contact_number',
+    'trust_features',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -44,6 +45,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'trust_features' => 'array',
         ];
     }
 
@@ -102,6 +104,47 @@ class User extends Authenticatable
             ->first()
             ?? self::where('role', 'admin')->latest('id')->first()
             ?? self::first();
+    }
+
+
+    public function getTrustFeaturesAttribute($value): array
+    {
+        $decoded = is_string($value) ? json_decode($value, true) : $value;
+        if (!empty($decoded) && is_array($decoded)) {
+            return $decoded;
+        }
+
+        return self::defaultTrustFeatures();
+    }
+
+    public static function defaultTrustFeatures(): array
+    {
+        return [
+            [
+                'title' => 'Live Arrival Guarantee',
+                'desc' => 'Healthy fish conditioned and packed with pure oxygen for safe transit.',
+                'icon' => 'shield-check',
+                'color' => 'cyan',
+            ],
+            [
+                'title' => 'Metro & Provincial Cargo',
+                'desc' => 'Same-day via Lalamove / Grab Express or provincial bus terminal cargo.',
+                'icon' => 'truck',
+                'color' => 'teal',
+            ],
+            [
+                'title' => 'WYSIWYG Photos',
+                'desc' => 'What You See Is What You Get. Real individual photos of active specimens.',
+                'icon' => 'camera',
+                'color' => 'indigo',
+            ],
+            [
+                'title' => 'GCash & Maya Scan-to-Pay',
+                'desc' => 'Verified payments processed after live order confirmation.',
+                'icon' => 'credit-card',
+                'color' => 'emerald',
+            ],
+        ];
     }
 
 }

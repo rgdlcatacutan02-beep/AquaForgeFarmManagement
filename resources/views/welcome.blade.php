@@ -167,39 +167,30 @@
                 </div>
             @endif
 
-            <!-- Customer Trust & Delivery Assurances -->
+            <!-- Customer Trust & Delivery Assurances (Dynamic from Farm Settings) -->
+            @php
+                $trustFeatures = $owner?->trust_features ?? \App\Models\User::defaultTrustFeatures();
+                $colorThemes = [
+                    'cyan' => ['badge' => 'bg-cyan-950 text-cyan-400', 'border' => 'hover:border-cyan-800/50'],
+                    'teal' => ['badge' => 'bg-teal-950 text-teal-400', 'border' => 'hover:border-teal-800/50'],
+                    'indigo' => ['badge' => 'bg-indigo-950 text-indigo-400', 'border' => 'hover:border-indigo-800/50'],
+                    'emerald' => ['badge' => 'bg-emerald-950 text-emerald-400', 'border' => 'hover:border-emerald-800/50'],
+                ];
+            @endphp
             <div class="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left w-full">
-                <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-cyan-800/50 transition">
-                    <div class="w-8 h-8 rounded-lg bg-cyan-950 text-cyan-400 flex items-center justify-center mb-2.5">
-                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                @foreach ($trustFeatures as $idx => $feat)
+                    @php
+                        $colorKey = $feat['color'] ?? (['cyan', 'teal', 'indigo', 'emerald'][$idx % 4]);
+                        $theme = $colorThemes[$colorKey] ?? $colorThemes['cyan'];
+                    @endphp
+                    <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 {{ $theme['border'] }} transition">
+                        <div class="w-8 h-8 rounded-lg {{ $theme['badge'] }} flex items-center justify-center mb-2.5">
+                            <i data-lucide="{{ $feat['icon'] ?? 'shield-check' }}" class="w-4 h-4"></i>
+                        </div>
+                        <div class="text-xs font-bold text-white">{{ $feat['title'] ?? '' }}</div>
+                        <div class="text-[11px] text-slate-400 mt-1 leading-relaxed">{{ $feat['desc'] ?? '' }}</div>
                     </div>
-                    <div class="text-xs font-bold text-white">Live Arrival Guarantee</div>
-                    <div class="text-[11px] text-slate-400 mt-1">Healthy fish conditioned and packed with pure oxygen for safe transit.</div>
-                </div>
-
-                <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-teal-800/50 transition">
-                    <div class="w-8 h-8 rounded-lg bg-teal-950 text-teal-400 flex items-center justify-center mb-2.5">
-                        <i data-lucide="truck" class="w-4 h-4"></i>
-                    </div>
-                    <div class="text-xs font-bold text-white">Metro &amp; Provincial Cargo</div>
-                    <div class="text-[11px] text-slate-400 mt-1">Same-day via Lalamove / Grab Express or provincial bus terminal cargo.</div>
-                </div>
-
-                <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-indigo-800/50 transition">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-950 text-indigo-400 flex items-center justify-center mb-2.5">
-                        <i data-lucide="camera" class="w-4 h-4"></i>
-                    </div>
-                    <div class="text-xs font-bold text-white">WYSIWYG Photos</div>
-                    <div class="text-[11px] text-slate-400 mt-1">What You See Is What You Get. Real individual photos of active specimens.</div>
-                </div>
-
-                <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-emerald-800/50 transition">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-950 text-emerald-400 flex items-center justify-center mb-2.5">
-                        <i data-lucide="credit-card" class="w-4 h-4"></i>
-                    </div>
-                    <div class="text-xs font-bold text-white">GCash &amp; Maya Scan-to-Pay</div>
-                    <div class="text-[11px] text-slate-400 mt-1">Verified payments processed after live order confirmation.</div>
-                </div>
+                @endforeach
             </div>
         </main>
 

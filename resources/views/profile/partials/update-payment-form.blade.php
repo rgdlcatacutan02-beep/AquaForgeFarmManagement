@@ -121,6 +121,79 @@
             </div>
         </div>
 
+                <!-- Customer Trust & Delivery Assurances (Welcome Page 4 Cards) -->
+        <div class="bg-slate-950/60 p-5 rounded-xl border border-teal-800/40 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                <div class="text-xs font-bold text-teal-400 uppercase tracking-wider flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-teal-400"></i>
+                    <span>Customer Trust &amp; Delivery Assurances (Welcome Landing Cards)</span>
+                </div>
+                <span class="text-[10px] text-slate-400 font-mono">Displayed on First Page</span>
+            </div>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+                Edit the 4 assurance cards shown to visitors on your farm's front welcome page. Customize each card's title, description, and badge icon to reflect your exact policies (e.g. shipping couriers, guarantee hours, photography standards, payment options).
+            </p>
+
+            @php
+                $trustList = $user->trust_features ?? \App\Models\User::defaultTrustFeatures();
+                $iconOptions = [
+                    'shield-check' => 'Shield / Guarantee',
+                    'truck' => 'Truck / Delivery',
+                    'camera' => 'Camera / WYSIWYG',
+                    'credit-card' => 'Card / Payment',
+                    'fish' => 'Fish / Livestock',
+                    'award' => 'Award / Quality',
+                    'heart' => 'Heart / Care',
+                    'package' => 'Package / Box',
+                ];
+                $colorOptions = [
+                    'cyan' => 'Cyan',
+                    'teal' => 'Teal',
+                    'indigo' => 'Indigo',
+                    'emerald' => 'Emerald',
+                ];
+            @endphp
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @foreach ($trustList as $i => $item)
+                    <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3 relative">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-200 flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-full bg-slate-800 border border-slate-700 text-teal-400 flex items-center justify-center font-mono text-[10px]">{{ $i + 1 }}</span>
+                                <span>Card {{ $i + 1 }}</span>
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <select name="trust_features[{{ $i }}][icon]" class="rounded bg-slate-950 border border-slate-700 text-slate-300 text-[11px] py-1 px-2 focus:ring-1 focus:ring-teal-500">
+                                    @foreach ($iconOptions as $icoKey => $icoLabel)
+                                        <option value="{{ $icoKey }}" @selected(($item['icon'] ?? '') === $icoKey)>{{ $icoLabel }}</option>
+                                    @endforeach
+                                </select>
+                                <select name="trust_features[{{ $i }}][color]" class="rounded bg-slate-950 border border-slate-700 text-slate-300 text-[11px] py-1 px-2 focus:ring-1 focus:ring-teal-500">
+                                    @foreach ($colorOptions as $colKey => $colLabel)
+                                        <option value="{{ $colKey }}" @selected(($item['color'] ?? '') === $colKey)>{{ $colLabel }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Title</label>
+                            <input type="text" name="trust_features[{{ $i }}][title]" value="{{ old("trust_features.{$i}.title", $item['title'] ?? '') }}" required
+                                   class="w-full rounded-lg bg-slate-950 border border-slate-700 text-white text-xs px-3 py-2 focus:ring-1 focus:ring-teal-500"
+                                   placeholder="Card Title">
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Description</label>
+                            <textarea name="trust_features[{{ $i }}][desc]" rows="2" required
+                                      class="w-full rounded-lg bg-slate-950 border border-slate-700 text-white text-xs px-3 py-2 focus:ring-1 focus:ring-teal-500"
+                                      placeholder="Short description or policy details...">{{ old("trust_features.{$i}.desc", $item['desc'] ?? '') }}</textarea>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
         <!-- Facebook & Messenger Social Selling -->
         <div class="bg-slate-950/60 p-4 rounded-xl border border-blue-900/40 space-y-4">
             <div class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2">

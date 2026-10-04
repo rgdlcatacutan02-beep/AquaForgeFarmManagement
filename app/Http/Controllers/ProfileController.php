@@ -79,6 +79,11 @@ class ProfileController extends Controller
             'maya_number' => 'nullable|string|max:50',
             'bank_details' => 'nullable|string|max:500',
             'shipping_notes' => 'nullable|string|max:500',
+            'trust_features' => 'nullable|array',
+            'trust_features.*.title' => 'nullable|string|max:100',
+            'trust_features.*.desc' => 'nullable|string|max:255',
+            'trust_features.*.icon' => 'nullable|string|max:50',
+            'trust_features.*.color' => 'nullable|string|max:50',
         ], [
             'farm_logo.mimes' => 'The logo must be an image file (PNG, JPG, SVG, WebP, GIF, or BMP).',
             'farm_logo.max' => 'The logo file size must not exceed 20MB.',
@@ -125,6 +130,7 @@ class ProfileController extends Controller
             'maya_number' => $user->maya_number,
             'bank_details' => $user->bank_details,
             'shipping_notes' => $user->shipping_notes,
+            'trust_features' => $user->trust_features,
         ]);
 
         return Redirect::route('profile.edit')->with('success', 'Farm branding, logo, Messenger, and payment settings updated successfully.');

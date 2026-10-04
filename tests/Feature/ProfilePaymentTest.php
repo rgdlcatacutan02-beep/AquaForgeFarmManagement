@@ -138,4 +138,61 @@ class ProfilePaymentTest extends TestCase
 
         $response->assertSessionHasErrors('farm_logo');
     }
+
+    public function test_admin_can_edit_welcome_trust_features_cards(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'admin',
+            'farm_name' => 'RAM Aquatics',
+        ]);
+
+        $customFeatures = [
+            [
+                'title' => '100% DOA Replacement',
+                'desc' => 'Clear unboxing video within 1 hour guarantees full refund or specimen replacement.',
+                'icon' => 'shield-check',
+                'color' => 'cyan',
+            ],
+            [
+                'title' => 'Express Island Cargo',
+                'desc' => 'Direct bus cargo & flight courier across Luzon, Visayas, and Mindanao.',
+                'icon' => 'truck',
+                'color' => 'teal',
+            ],
+            [
+                'title' => 'Pure Lineage DNA',
+                'desc' => 'Certified strain purity tracked through AquaForge genealogy logs.',
+                'icon' => 'award',
+                'color' => 'indigo',
+            ],
+            [
+                'title' => 'Instant Digital Pay',
+                'desc' => 'Scan QR to pay securely via GCash, Maya, and BDO online transfer.',
+                'icon' => 'credit-card',
+                'color' => 'emerald',
+            ],
+        ];
+
+        $response = $this->actingAs($user)->patch(route('profile.payment.update'), [
+            'farm_name' => 'RAM Aquatics',
+            'trust_features' => $customFeatures,
+        ]);
+
+        $response->assertRedirect(route('profile.edit'));
+        $response->assertSessionHas('success');
+
+        $user->refresh();
+        $this->assertEquals('100% DOA Replacement', $user->trust_features[0]['title']);
+        $this->assertEquals('Express Island Cargo', $user->trust_features[1]['title']);
+        $this->assertEquals('Pure Lineage DNA', $user->trust_features[2]['title']);
+        $this->assertEquals('Instant Digital Pay', $user->trust_features[3]['title']);
+
+        // Check that welcome page renders the customized cards
+        $welcomeRes = $this->get(url('/'));
+        $welcomeRes->assertOk();
+        $welcomeRes->assertSee('100% DOA Replacement');
+        $welcomeRes->assertSee('Express Island Cargo');
+        $welcomeRes->assertSee('Pure Lineage DNA');
+        $welcomeRes->assertSee('Instant Digital Pay');
+    }
 }
