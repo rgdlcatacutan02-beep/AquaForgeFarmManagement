@@ -56,7 +56,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label for="male_livestock_id" class="block text-xs font-semibold text-blue-400 mb-1.5 flex items-center gap-1">
-                                <span>?</span> Male Breeder
+                                <span>♂</span> Male Breeder
                             </label>
                             <select name="male_livestock_id" id="male_livestock_id" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                                 <option value="">None / Colony Sire</option>
@@ -70,7 +70,7 @@
 
                         <div>
                             <label for="female_livestock_id" class="block text-xs font-semibold text-rose-400 mb-1.5 flex items-center gap-1">
-                                <span>?</span> Female Breeder
+                                <span>♀</span> Female Breeder
                             </label>
                             <select name="female_livestock_id" id="female_livestock_id" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500 transition">
                                 <option value="">None / Colony Dam</option>

@@ -31,34 +31,14 @@ class ExpenseController extends Controller
             ->whereYear('expense_date', now()->year)
             ->sum('amount');
 
-        $categories = [
-            'FEED' => 'Feed & Nutrition',
-            'LIVESTOCK' => 'Livestock Acquisition',
-            'EQUIPMENT' => 'Equipment & Hardware',
-            'ELECTRICITY' => 'Power & Electricity',
-            'WATER' => 'Water & Utilities',
-            'MEDICATION' => 'Medication & Treatments',
-            'PACKAGING' => 'Shipping & Packaging',
-            'MAINTENANCE' => 'Repairs & Maintenance',
-            'OTHER' => 'General / Other',
-        ];
+        $categories = Expense::categories();
 
         return view('expenses.index', compact('expenses', 'totalExpenses', 'monthExpenses', 'categories'));
     }
 
     public function create(): View
     {
-        $categories = [
-            'FEED' => 'Feed & Nutrition',
-            'LIVESTOCK' => 'Livestock Acquisition',
-            'EQUIPMENT' => 'Equipment & Hardware',
-            'ELECTRICITY' => 'Power & Electricity',
-            'WATER' => 'Water & Utilities',
-            'MEDICATION' => 'Medication & Treatments',
-            'PACKAGING' => 'Shipping & Packaging',
-            'MAINTENANCE' => 'Repairs & Maintenance',
-            'OTHER' => 'General / Other',
-        ];
+        $categories = Expense::categories();
 
         return view('expenses.create', compact('categories'));
     }
@@ -80,17 +60,7 @@ class ExpenseController extends Controller
 
     public function edit(Expense $expense): View
     {
-        $categories = [
-            'FEED' => 'Feed & Nutrition',
-            'LIVESTOCK' => 'Livestock Acquisition',
-            'EQUIPMENT' => 'Equipment & Hardware',
-            'ELECTRICITY' => 'Power & Electricity',
-            'WATER' => 'Water & Utilities',
-            'MEDICATION' => 'Medication & Treatments',
-            'PACKAGING' => 'Shipping & Packaging',
-            'MAINTENANCE' => 'Repairs & Maintenance',
-            'OTHER' => 'General / Other',
-        ];
+        $categories = Expense::categories();
 
         return view('expenses.edit', compact('expense', 'categories'));
     }

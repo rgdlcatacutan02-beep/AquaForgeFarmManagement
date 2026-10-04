@@ -81,7 +81,7 @@
                         <div class="mt-4 p-3 rounded-lg bg-slate-950/60 border border-slate-800/80 space-y-2">
                             <div class="flex items-center justify-between text-xs">
                                 <span class="text-blue-400 font-semibold flex items-center gap-1.5">
-                                    <span>?</span> Male Parent:
+                                    <span>♂</span> Male Parent:
                                 </span>
                                 @if($event->maleLivestock)
                                     <a href="{{ route('livestock.show', $event->maleLivestock) }}" class="font-mono text-slate-200 hover:text-cyan-400 font-bold">
@@ -95,7 +95,7 @@
 
                             <div class="flex items-center justify-between text-xs pt-1.5 border-t border-slate-800/60">
                                 <span class="text-rose-400 font-semibold flex items-center gap-1.5">
-                                    <span>?</span> Female Parent:
+                                    <span>♀</span> Female Parent:
                                 </span>
                                 @if($event->femaleLivestock)
                                     <a href="{{ route('livestock.show', $event->femaleLivestock) }}" class="font-mono text-slate-200 hover:text-cyan-400 font-bold">

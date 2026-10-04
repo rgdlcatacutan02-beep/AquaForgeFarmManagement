@@ -60,4 +60,12 @@ class WaterLogController extends Controller
 
         return redirect()->route('tanks.show', $validated['tank_id'])->with('success', 'Water test recorded successfully.');
     }
+
+    public function destroy(WaterLog $waterLog)
+    {
+        $tankId = $waterLog->tank_id;
+        $waterLog->delete();
+
+        return redirect()->back()->with('success', 'Water test log removed successfully.');
+    }
 }

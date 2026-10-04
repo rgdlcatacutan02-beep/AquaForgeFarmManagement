@@ -45,4 +45,11 @@ class FeedingLogController extends Controller
 
         return redirect()->route('tanks.show', $validated['tank_id'])->with('success', 'Feeding logged successfully.');
     }
+
+    public function destroy(FeedingLog $feeding)
+    {
+        $feeding->delete();
+
+        return redirect()->back()->with('success', 'Feeding record removed successfully.');
+    }
 }

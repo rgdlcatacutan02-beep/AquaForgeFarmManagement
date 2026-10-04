@@ -127,9 +127,14 @@ class TankController extends Controller
 
     public function destroy(Tank $tank)
     {
+        if ($tank->livestock()->exists() || $tank->offspringBatches()->where('current_count', '>', 0)->exists() || $tank->breedingEvents()->where('status', 'ACTIVE')->exists()) {
+            return back()->with('error', "Cannot delete tank '{$tank->tank_code}' because livestock, active fry batches, or active breeding pairs are currently housed in it. Please relocate them first.");
+        }
+
+        $code = $tank->tank_code;
         $tank->delete();
 
-        return redirect()->route('tanks.index')->with('success', 'Tank archived successfully.');
+        return redirect()->route('tanks.index')->with('success', "Tank '{$code}' archived successfully.");
     }
     public function printLabel(Tank $tank): View
     {

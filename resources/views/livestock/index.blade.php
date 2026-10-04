@@ -133,11 +133,11 @@
                                     <td class="py-3 px-4 text-center">
                                         @if($item->sex === 'MALE')
                                             <span class="inline-flex items-center gap-1 text-xs font-semibold text-blue-400 bg-blue-950/60 border border-blue-800/40 px-2 py-0.5 rounded">
-                                                <span>?</span> Male
+                                                <span>♂</span> Male
                                             </span>
                                         @elseif($item->sex === 'FEMALE')
                                             <span class="inline-flex items-center gap-1 text-xs font-semibold text-rose-400 bg-rose-950/60 border border-rose-800/40 px-2 py-0.5 rounded">
-                                                <span>?</span> Female
+                                                <span>♀</span> Female
                                             </span>
                                         @else
                                             <span class="inline-flex items-center text-xs text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
@@ -165,7 +165,7 @@
                                                 {{ $item->grade }}
                                             </span>
                                         @else
-                                            <span class="text-slate-600 text-xs">?</span>
+                                            <span class="text-slate-600 text-xs">❓</span>
                                         @endif
                                     </td>
                                     <td class="py-3 px-4 text-center">

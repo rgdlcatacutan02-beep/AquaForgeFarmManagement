@@ -110,19 +110,22 @@ class SaleController extends Controller
                     'offspring_batch_id' => $item['offspring_batch_id'] ?? null,
                 ]);
 
-                if (!empty($item['livestock_id'])) {
-                    Livestock::where('id', $item['livestock_id'])->update(['status' => 'SOLD']);
-                }
+                // Only deduct and reserve stock if not cancelled upon creation
+                if ($validated['status'] !== 'CANCELLED') {
+                    if (!empty($item['livestock_id'])) {
+                        Livestock::where('id', $item['livestock_id'])->update(['status' => 'SOLD']);
+                    }
 
-                if (!empty($item['offspring_batch_id'])) {
-                    $b = OffspringBatch::find($item['offspring_batch_id']);
-                    if ($b) {
-                        $b->available_count = max(0, $b->available_count - $item['quantity']);
-                        $b->current_count = max(0, $b->current_count - $item['quantity']);
-                        if ($b->available_count === 0 && $b->current_count === 0) {
-                            $b->status = 'SOLD_OUT';
+                    if (!empty($item['offspring_batch_id'])) {
+                        $b = OffspringBatch::find($item['offspring_batch_id']);
+                        if ($b) {
+                            $b->available_count = max(0, $b->available_count - $item['quantity']);
+                            $b->current_count = max(0, $b->current_count - $item['quantity']);
+                            if ($b->available_count === 0 && $b->current_count === 0) {
+                                $b->status = 'SOLD_OUT';
+                            }
+                            $b->save();
                         }
-                        $b->save();
                     }
                 }
             }
@@ -131,10 +134,100 @@ class SaleController extends Controller
         return redirect()->route('sales.index')->with('success', 'Sale order recorded successfully.');
     }
 
+    public function edit(Sale $sale): View
+    {
+        $sale->load(['customer', 'items.livestock', 'items.offspringBatch']);
+        $customers = Customer::orderBy('name')->get();
+
+        return view('sales.edit', compact('sale', 'customers'));
+    }
+
+    public function update(Request $request, Sale $sale)
+    {
+        $validated = $request->validate([
+            'customer_id' => 'nullable|exists:customers,id',
+            'sale_date' => 'required|date',
+            'status' => 'required|string|in:PENDING,COMPLETED,CANCELLED',
+            'payment_status' => 'required|string|in:PAID,UNPAID,PARTIAL',
+            'notes' => 'nullable|string',
+        ]);
+
+        DB::transaction(function () use ($validated, $sale) {
+            $oldStatus = $sale->status;
+            $newStatus = $validated['status'];
+
+            // Transitioning TO cancelled -> restore stock
+            if ($oldStatus !== 'CANCELLED' && $newStatus === 'CANCELLED') {
+                foreach ($sale->items as $item) {
+                    if ($item->livestock_id) {
+                        Livestock::where('id', $item->livestock_id)->where('status', 'SOLD')->update(['status' => 'AVAILABLE']);
+                    }
+                    if ($item->offspring_batch_id) {
+                        $b = OffspringBatch::find($item->offspring_batch_id);
+                        if ($b) {
+                            $b->available_count += $item->quantity;
+                            $b->current_count += $item->quantity;
+                            if ($b->status === 'SOLD_OUT' && $b->available_count > 0) {
+                                $b->status = 'GROWING';
+                            }
+                            $b->save();
+                        }
+                    }
+                }
+            }
+
+            // Transitioning FROM cancelled back to active -> re-reserve stock
+            if ($oldStatus === 'CANCELLED' && $newStatus !== 'CANCELLED') {
+                foreach ($sale->items as $item) {
+                    if ($item->livestock_id) {
+                        Livestock::where('id', $item->livestock_id)->update(['status' => 'SOLD']);
+                    }
+                    if ($item->offspring_batch_id) {
+                        $b = OffspringBatch::find($item->offspring_batch_id);
+                        if ($b) {
+                            $b->available_count = max(0, $b->available_count - $item->quantity);
+                            $b->current_count = max(0, $b->current_count - $item->quantity);
+                            if ($b->available_count === 0 && $b->current_count === 0) {
+                                $b->status = 'SOLD_OUT';
+                            }
+                            $b->save();
+                        }
+                    }
+                }
+            }
+
+            $sale->update($validated);
+        });
+
+        return redirect()->route('sales.show', $sale)->with('success', 'Sale details and status updated successfully.');
+    }
+
     public function destroy(Sale $sale)
     {
-        $sale->delete();
+        DB::transaction(function () use ($sale) {
+            // Restore inventory and livestock if sale was not cancelled
+            if ($sale->status !== 'CANCELLED') {
+                foreach ($sale->items as $item) {
+                    if ($item->livestock_id) {
+                        Livestock::where('id', $item->livestock_id)->where('status', 'SOLD')->update(['status' => 'AVAILABLE']);
+                    }
+                    if ($item->offspring_batch_id) {
+                        $b = OffspringBatch::find($item->offspring_batch_id);
+                        if ($b) {
+                            $b->available_count += $item->quantity;
+                            $b->current_count += $item->quantity;
+                            if ($b->status === 'SOLD_OUT' && $b->available_count > 0) {
+                                $b->status = 'GROWING';
+                            }
+                            $b->save();
+                        }
+                    }
+                }
+            }
 
-        return redirect()->route('sales.index')->with('success', 'Sale record removed.');
+            $sale->delete();
+        });
+
+        return redirect()->route('sales.index')->with('success', 'Sale record removed and livestock/stock restored.');
     }
 }

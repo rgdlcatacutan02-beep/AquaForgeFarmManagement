@@ -70,7 +70,7 @@
                 <div class="p-4 rounded-xl bg-slate-950/70 border border-blue-900/40 relative">
                     <div class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3 flex items-center justify-between">
                         <span class="flex items-center gap-1.5">
-                            <span>?</span> Sire (Male Parent)
+                            <span>♂</span> Sire (Male Parent)
                         </span>
                         @if($breeding->maleLivestock)
                             <a href="{{ route('livestock.show', $breeding->maleLivestock) }}" class="text-[11px] text-cyan-400 hover:underline">View Profile &rarr;</a>
@@ -107,7 +107,7 @@
                 <div class="p-4 rounded-xl bg-slate-950/70 border border-rose-900/40 relative">
                     <div class="text-xs font-bold text-rose-400 uppercase tracking-wider mb-3 flex items-center justify-between">
                         <span class="flex items-center gap-1.5">
-                            <span>?</span> Dam (Female Parent)
+                            <span>♀</span> Dam (Female Parent)
                         </span>
                         @if($breeding->femaleLivestock)
                             <a href="{{ route('livestock.show', $breeding->femaleLivestock) }}" class="text-[11px] text-pink-400 hover:underline">View Profile &rarr;</a>

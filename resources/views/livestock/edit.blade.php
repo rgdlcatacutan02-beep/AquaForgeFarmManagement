@@ -83,9 +83,9 @@
                             Sex <span class="text-rose-400">*</span>
                         </label>
                         <select name="sex" id="sex" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
-                            <option value="MALE" {{ old('sex', $livestock->sex) === 'MALE' ? 'selected' : '' }}>? Male</option>
-                            <option value="FEMALE" {{ old('sex', $livestock->sex) === 'FEMALE' ? 'selected' : '' }}>? Female</option>
-                            <option value="UNKNOWN" {{ old('sex', $livestock->sex) === 'UNKNOWN' ? 'selected' : '' }}>? Unknown / Juvenile</option>
+                            <option value="MALE" {{ old('sex', $livestock->sex) === 'MALE' ? 'selected' : '' }}>♂ Male</option>
+                            <option value="FEMALE" {{ old('sex', $livestock->sex) === 'FEMALE' ? 'selected' : '' }}>♀ Female</option>
+                            <option value="UNKNOWN" {{ old('sex', $livestock->sex) === 'UNKNOWN' ? 'selected' : '' }}>❓ Unknown / Juvenile</option>
                         </select>
                     </div>
 

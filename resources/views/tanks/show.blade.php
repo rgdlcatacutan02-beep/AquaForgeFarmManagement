@@ -83,7 +83,7 @@
                     <input type="hidden" name="recorded_at" value="{{ now()->format('Y-m-d H:i:s') }}">
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[11px] font-medium text-slate-300">Temp (?C)</label>
+                            <label class="block text-[11px] font-medium text-slate-300">Temp (°C)</label>
                             <input type="number" step="0.1" name="temperature" placeholder="26.5" class="mt-1 w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-white">
                         </div>
                         <div>
@@ -261,7 +261,7 @@
                     <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
                         <div class="p-3 rounded-lg bg-slate-950/70 border border-slate-800 text-center">
                             <span class="text-[10px] text-slate-400 uppercase">Temp</span>
-                            <div class="mt-1 text-lg font-bold text-white font-mono">{{ $tank->latestWaterLog->temperature ?? '--' }}?C</div>
+                            <div class="mt-1 text-lg font-bold text-white font-mono">{{ $tank->latestWaterLog->temperature ?? '--' }}°C</div>
                         </div>
                         <div class="p-3 rounded-lg bg-slate-950/70 border border-slate-800 text-center">
                             <span class="text-[10px] text-slate-400 uppercase">pH</span>

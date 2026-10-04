@@ -111,4 +111,9 @@ class OffspringBatch extends Model
             'notes' => $notes,
         ]);
     }
+
+    public function saleItems(): HasMany
+    {
+        return $this->hasMany(SaleItem::class);
+    }
 }

@@ -127,6 +127,10 @@ class OffspringBatchController extends Controller
 
     public function destroy(OffspringBatch $batch)
     {
+        if ($batch->saleItems()->exists()) {
+            return back()->with('error', "Cannot delete batch '{$batch->batch_code}' because it has recorded sales order items.");
+        }
+
         $code = $batch->batch_code;
         $batch->delete();
 

@@ -219,4 +219,157 @@ class Phase5BusinessTest extends TestCase
         $reportResponse->assertSee('Breeding & Survival Performance', false);
         $reportResponse->assertSee('Expense Breakdown by Category');
     }
+
+    public function test_cancelling_and_deleting_sale_restores_inventory(): void
+    {
+        $species = Species::create([
+            'name' => 'Platy',
+            'active' => true,
+        ]);
+
+        $tank = Tank::create([
+            'tank_code' => 'T-RESTORE-01',
+            'name' => 'Holding',
+            'volume_liters' => 40,
+            'purpose' => 'GROWOUT',
+            'status' => 'ACTIVE',
+        ]);
+
+        $livestock = Livestock::create([
+            'species_id' => $species->id,
+            'tank_id' => $tank->id,
+            'livestock_code' => 'LIV-RESTORE-01',
+            'sex' => 'FEMALE',
+            'status' => 'AVAILABLE',
+        ]);
+
+        $batch = OffspringBatch::create([
+            'species_id' => $species->id,
+            'tank_id' => $tank->id,
+            'batch_code' => 'BAT-RESTORE-01',
+            'initial_count' => 20,
+            'current_count' => 20,
+            'available_count' => 20,
+            'status' => 'ACTIVE',
+        ]);
+
+        $this->actingAs($this->user)->post(route('sales.store'), [
+            'sale_number' => 'SALE-CANCEL-TEST',
+            'sale_date' => '2026-10-04',
+            'status' => 'COMPLETED',
+            'payment_status' => 'PAID',
+            'subtotal' => 100.00,
+            'total' => 100.00,
+            'items' => [
+                [
+                    'item_description' => 'Platy Female',
+                    'quantity' => 1,
+                    'unit_price' => 50.00,
+                    'livestock_id' => $livestock->id,
+                ],
+                [
+                    'item_description' => 'Platy Fry (10 pcs)',
+                    'quantity' => 10,
+                    'unit_price' => 5.00,
+                    'offspring_batch_id' => $batch->id,
+                ],
+            ],
+        ]);
+
+        $livestock->refresh();
+        $this->assertEquals('SOLD', $livestock->status);
+        $batch->refresh();
+        $this->assertEquals(10, $batch->available_count);
+
+        $sale = Sale::where('sale_number', 'SALE-CANCEL-TEST')->first();
+
+        // 1. Test edit view renders
+        $editResponse = $this->actingAs($this->user)->get(route('sales.edit', $sale));
+        $editResponse->assertStatus(200);
+        $editResponse->assertSee('SALE-CANCEL-TEST');
+
+        // 2. Test status changed to CANCELLED releases stock
+        $this->actingAs($this->user)->put(route('sales.update', $sale), [
+            'sale_date' => '2026-10-04',
+            'status' => 'CANCELLED',
+            'payment_status' => 'UNPAID',
+            'notes' => 'Customer cancelled',
+        ]);
+
+        $livestock->refresh();
+        $this->assertEquals('AVAILABLE', $livestock->status);
+        $batch->refresh();
+        $this->assertEquals(20, $batch->available_count);
+
+        // 3. Test deleting sale also cleans up
+        $this->actingAs($this->user)->delete(route('sales.destroy', $sale));
+        $this->assertSoftDeleted('sales', ['id' => $sale->id]);
+    }
+
+    public function test_cannot_delete_tank_with_assigned_livestock(): void
+    {
+        $species = Species::create(['name' => 'Molly', 'active' => true]);
+        $tank = Tank::create([
+            'tank_code' => 'T-GUARD-01',
+            'name' => 'Guarded Tank',
+            'volume_liters' => 60,
+            'purpose' => 'BREEDING',
+            'status' => 'ACTIVE',
+        ]);
+
+        Livestock::create([
+            'species_id' => $species->id,
+            'tank_id' => $tank->id,
+            'livestock_code' => 'LIV-GUARD-01',
+            'sex' => 'MALE',
+            'status' => 'AVAILABLE',
+        ]);
+
+        $response = $this->actingAs($this->user)->delete(route('tanks.destroy', $tank));
+        $response->assertSessionHas('error');
+        $this->assertDatabaseHas('tanks', ['id' => $tank->id]);
+    }
+
+    public function test_cannot_delete_batch_with_recorded_sale_items(): void
+    {
+        $species = Species::create(['name' => 'Swordtail', 'active' => true]);
+        $tank = Tank::create([
+            'tank_code' => 'T-BATCH-01',
+            'name' => 'Batch Tank',
+            'volume_liters' => 50,
+            'purpose' => 'GROWOUT',
+            'status' => 'ACTIVE',
+        ]);
+
+        $batch = OffspringBatch::create([
+            'species_id' => $species->id,
+            'tank_id' => $tank->id,
+            'batch_code' => 'BAT-LOCK-01',
+            'initial_count' => 10,
+            'current_count' => 10,
+            'available_count' => 10,
+            'status' => 'ACTIVE',
+        ]);
+
+        $sale = Sale::create([
+            'sale_number' => 'SALE-BATCH-LOCK',
+            'sale_date' => '2026-10-04',
+            'status' => 'COMPLETED',
+            'payment_status' => 'PAID',
+            'subtotal' => 50.00,
+            'total' => 50.00,
+        ]);
+
+        $sale->items()->create([
+            'item_description' => 'Swordtail fry',
+            'quantity' => 2,
+            'unit_price' => 25.00,
+            'subtotal' => 50.00,
+            'offspring_batch_id' => $batch->id,
+        ]);
+
+        $response = $this->actingAs($this->user)->delete(route('batches.destroy', $batch));
+        $response->assertSessionHas('error');
+        $this->assertDatabaseHas('offspring_batches', ['id' => $batch->id]);
+    }
 }

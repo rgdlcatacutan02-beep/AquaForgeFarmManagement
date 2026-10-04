@@ -45,4 +45,11 @@ class MaintenanceLogController extends Controller
 
         return redirect()->route('tanks.show', $validated['tank_id'])->with('success', 'Maintenance recorded successfully.');
     }
+
+    public function destroy(MaintenanceLog $maintenance)
+    {
+        $maintenance->delete();
+
+        return redirect()->back()->with('success', 'Maintenance log removed successfully.');
+    }
 }

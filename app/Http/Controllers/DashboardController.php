@@ -100,7 +100,7 @@ class DashboardController extends Controller
         $recentSales = Sale::latest('sale_date')->take(3)->get()->map(function ($item) {
             return [
                 'type' => 'sale',
-                'title' => 'Sale '.$item->sale_number.' - $'.number_format($item->total, 2),
+                'title' => 'Sale '.$item->sale_number.' - ₱'.number_format($item->total, 2),
                 'subtitle' => "Status: {$item->status} | {$item->payment_status}",
                 'time' => $item->created_at,
             ];

@@ -157,7 +157,7 @@
                     <!-- Male Parent -->
                     <div class="p-3 rounded-lg bg-slate-950/60 border border-blue-900/40">
                         <div class="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-                            <span>?</span> Sire (Father)
+                            <span>♂</span> Sire (Father)
                         </div>
                         @if($batch->breedingEvent->maleLivestock)
                             <div class="flex items-center justify-between">
@@ -174,7 +174,7 @@
                     <!-- Female Parent -->
                     <div class="p-3 rounded-lg bg-slate-950/60 border border-rose-900/40">
                         <div class="text-[10px] font-bold text-rose-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-                            <span>?</span> Dam (Mother)
+                            <span>♀</span> Dam (Mother)
                         </div>
                         @if($batch->breedingEvent->femaleLivestock)
                             <div class="flex items-center justify-between">

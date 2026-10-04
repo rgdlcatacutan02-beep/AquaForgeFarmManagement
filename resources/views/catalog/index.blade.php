@@ -322,7 +322,7 @@
                                 <div class="flex items-baseline justify-between">
                                     <span class="text-[10px] uppercase font-bold text-slate-400">Asking Price</span>
                                     <span class="text-base font-extrabold text-emerald-400 font-mono">
-                                        ?{{ number_format($fish->purchase_price, 2) }}
+                                        &#8369;{{ number_format($fish->purchase_price, 2) }}
                                     </span>
                                 </div>
 

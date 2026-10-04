@@ -7,7 +7,7 @@
     <title>{{ $livestock->variety ?: $livestock->species?->name }} ({{ $livestock->livestock_code }}) ? {{ $owner->farm_name ?? 'AquaForge' }}</title>
     
     <!-- OpenGraph for Facebook Link Previews -->
-    <meta property="og:title" content="{{ $livestock->variety ?: $livestock->species?->name }} [{{ $livestock->grade ?? 'Breeder Grade' }}] ? ?{{ number_format($livestock->purchase_price, 2) }}">
+    <meta property="og:title" content="{{ $livestock->variety ?: $livestock->species?->name }} [{{ $livestock->grade ?? 'Breeder Grade' }}] ? &#8369;{{ number_format($livestock->purchase_price, 2) }}">
     <meta property="og:description" content="Available live specimen at {{ $owner->farm_name ?? 'AquaForge' }}. Sex: {{ $livestock->sex }}. Click to inspect high-resolution photos and message breeder directly on Messenger.">
     <meta property="og:type" content="product">
     <meta property="og:url" content="{{ url()->current() }}">
@@ -146,7 +146,7 @@
                 <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
                     <span class="text-[11px] uppercase font-bold text-slate-400">Asking Price</span>
                     <div class="text-3xl font-extrabold text-emerald-400 font-mono">
-                        ?{{ number_format($livestock->purchase_price, 2) }}
+                        &#8369;{{ number_format($livestock->purchase_price, 2) }}
                     </div>
                     <p class="text-[11px] text-slate-500">Price is in Philippine Peso. Delivery / shipping fee calculated upon booking.</p>
                 </div>
@@ -220,7 +220,7 @@
                     @endif
 
                     @php
-                        $singleFbPost = "?? SPOTLIGHT: " . ($livestock->variety ?: $livestock->species?->name) . " ??\n\n"
+                        $singleFbPost = "? SPOTLIGHT: " . ($livestock->variety ?: $livestock->species?->name) . " ?\n\n"
                             . "?? Grade: " . ($livestock->grade ?? 'Show Grade') . "\n"
                             . "? Sex: {$livestock->sex}\n"
                             . "?? Price: ?" . number_format($livestock->purchase_price, 2) . "\n"
@@ -300,7 +300,7 @@
                             </div>
                             <div class="text-xs font-bold text-white group-hover:text-cyan-300 truncate">{{ $rel->variety ?: $rel->species?->name }}</div>
                             <div class="flex items-center justify-between text-[11px] mt-1">
-                                <span class="font-mono text-emerald-400 font-bold">?{{ number_format($rel->purchase_price, 2) }}</span>
+                                <span class="font-mono text-emerald-400 font-bold">&#8369;{{ number_format($rel->purchase_price, 2) }}</span>
                                 <span class="text-slate-400 font-mono">{{ $rel->sex }}</span>
                             </div>
                         </a>

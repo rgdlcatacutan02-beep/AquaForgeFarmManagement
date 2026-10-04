@@ -13,7 +13,11 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 print:hidden">
+                <a href="{{ route('sales.edit', $sale) }}" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5">
+                    <i data-lucide="edit-3" class="w-3.5 h-3.5 text-cyan-400"></i>
+                    <span>Edit Sale</span>
+                </a>
                 <button onclick="window.print()" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white shadow-md shadow-cyan-950 transition-all flex items-center gap-1.5">
                     <i data-lucide="printer" class="w-3.5 h-3.5"></i>
                     <span>Print Invoice</span>

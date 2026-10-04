@@ -19,7 +19,7 @@
                     <tr>
                         <th class="py-3 px-4">Date & Time</th>
                         <th class="py-3 px-4">Tank</th>
-                        <th class="py-3 px-4">Temp (?C)</th>
+                        <th class="py-3 px-4">Temp (°C)</th>
                         <th class="py-3 px-4">pH</th>
                         <th class="py-3 px-4">Ammonia</th>
                         <th class="py-3 px-4">Nitrite</th>

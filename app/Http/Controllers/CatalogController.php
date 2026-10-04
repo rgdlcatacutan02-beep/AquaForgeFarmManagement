@@ -16,7 +16,7 @@ class CatalogController extends Controller
      */
     public function index(Request $request): View
     {
-        $owner = User::first();
+        $owner = User::where('role', 'admin')->first() ?? User::first();
 
         $query = Livestock::with(['species', 'tank'])
             ->where('status', 'AVAILABLE');
@@ -70,7 +70,7 @@ class CatalogController extends Controller
      */
     public function show(Livestock $livestock): View
     {
-        $owner = User::first();
+        $owner = User::where('role', 'admin')->first() ?? User::first();
         $livestock->load(['species', 'tank.photos', 'tankPhotos']);
 
         // Related specimens of same species

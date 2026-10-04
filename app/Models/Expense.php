@@ -10,6 +10,18 @@ class Expense extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const CATEGORIES = [
+        'FEED' => 'Feed & Nutrition',
+        'LIVESTOCK' => 'Livestock Acquisition',
+        'EQUIPMENT' => 'Equipment & Hardware',
+        'ELECTRICITY' => 'Power & Electricity',
+        'WATER' => 'Water & Utilities',
+        'MEDICATION' => 'Medication & Treatments',
+        'PACKAGING' => 'Shipping & Packaging',
+        'MAINTENANCE' => 'Repairs & Maintenance',
+        'OTHER' => 'General / Other',
+    ];
+
     protected $fillable = [
         'category',
         'description',
@@ -22,4 +34,9 @@ class Expense extends Model
         'expense_date' => 'date',
         'amount' => 'decimal:2',
     ];
+
+    public static function categories(): array
+    {
+        return self::CATEGORIES;
+    }
 }

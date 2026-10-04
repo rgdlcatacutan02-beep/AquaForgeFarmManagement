@@ -75,4 +75,9 @@ class Livestock extends Model
     {
         return $this->hasMany(TankPhoto::class)->latest();
     }
+
+    public function saleItems(): HasMany
+    {
+        return $this->hasMany(SaleItem::class);
+    }
 }

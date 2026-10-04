@@ -87,7 +87,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         <!-- Temperature -->
                         <div>
-                            <label for="temperature" class="block text-xs text-slate-300 mb-1">Temperature (?C)</label>
+                            <label for="temperature" class="block text-xs text-slate-300 mb-1">Temperature (°C)</label>
                             <input type="number" step="0.1" name="temperature" id="temperature" x-model="temp" placeholder="26.0" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm text-cyan-300 font-mono font-bold focus:outline-none focus:border-cyan-500">
                         </div>
 
@@ -105,13 +105,13 @@
 
                         <!-- Nitrite -->
                         <div>
-                            <label for="nitrite" class="block text-xs text-slate-300 mb-1">Nitrite NO?? (ppm)</label>
+                            <label for="nitrite" class="block text-xs text-slate-300 mb-1">Nitrite NO₂⁻ (ppm)</label>
                             <input type="number" step="0.01" name="nitrite" id="nitrite" x-model="nitrite" placeholder="0.00" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm font-mono font-bold focus:outline-none focus:border-cyan-500" :class="parseFloat(nitrite) > 0 ? 'text-rose-400' : 'text-emerald-400'">
                         </div>
 
                         <!-- Nitrate -->
                         <div>
-                            <label for="nitrate" class="block text-xs text-slate-300 mb-1">Nitrate NO?? (ppm)</label>
+                            <label for="nitrate" class="block text-xs text-slate-300 mb-1">Nitrate NO₃⁻ (ppm)</label>
                             <input type="number" step="1" name="nitrate" id="nitrate" x-model="nitrate" placeholder="20" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white font-mono font-bold focus:outline-none focus:border-cyan-500">
                         </div>
 

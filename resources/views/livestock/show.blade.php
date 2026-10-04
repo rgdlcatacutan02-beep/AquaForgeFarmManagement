@@ -479,7 +479,7 @@
                     ctx.fillRect(40, 635, 180, 35);
                     ctx.fillStyle = '#0f172a';
                     ctx.font = 'bold 16px sans-serif';
-                    ctx.fillText('? {{ $livestock->grade ?? "SHOW GRADE" }}', 55, 658);
+                    ctx.fillText('?? {{ $livestock->grade ?? "SHOW GRADE" }}', 55, 658);
 
                     // Asking Price
                     const priceVal = parseFloat(window.Alpine ? Alpine.$data(document.querySelector('[x-data]')).askingPrice : '{{ $livestock->purchase_price }}') || 0;

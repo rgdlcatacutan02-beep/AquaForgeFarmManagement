@@ -50,15 +50,15 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::resource('breeding', BreedingEventController::class);
 
     // Husbandry
-    Route::resource('water-logs', WaterLogController::class);
-    Route::resource('feeding', FeedingLogController::class);
-    Route::resource('maintenance', MaintenanceLogController::class);
+    Route::resource('water-logs', WaterLogController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::resource('feeding', FeedingLogController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::resource('maintenance', MaintenanceLogController::class)->only(['index', 'create', 'store', 'destroy']);
 
     // Business & Financial Operations
-    Route::resource('inventory', InventoryItemController::class);
+    Route::resource('inventory', InventoryItemController::class)->except(['show']);
     Route::resource('sales', SaleController::class);
     Route::resource('customers', CustomerController::class);
-    Route::resource('expenses', ExpenseController::class);
+    Route::resource('expenses', ExpenseController::class)->except(['show']);
 
     // Farm Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
