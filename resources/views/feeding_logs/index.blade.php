@@ -1,0 +1,44 @@
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-bold text-white tracking-tight">Feeding History</h1>
+                <p class="text-xs text-slate-400 mt-0.5">Feed scheduling and nutritional log records</p>
+            </div>
+            <a href="{{ route('feeding.create') }}" class="px-3.5 py-2 text-xs font-semibold rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white flex items-center gap-1.5 shadow-md shadow-cyan-950 transition-all">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                <span>Log Feeding</span>
+            </a>
+        </div>
+    </x-slot>
+
+    <div class="space-y-4">
+        <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
+            <table class="w-full text-left text-xs text-slate-300">
+                <thead class="text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-800 bg-slate-950/40">
+                    <tr>
+                        <th class="py-3 px-4">Timestamp</th>
+                        <th class="py-3 px-4">Tank</th>
+                        <th class="py-3 px-4">Food</th>
+                        <th class="py-3 px-4">Quantity</th>
+                        <th class="py-3 px-4">Notes</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60">
+                    @forelse ($logs as $log)
+                        <tr class="hover:bg-slate-800/40 transition-colors">
+                            <td class="py-3 px-4 text-slate-400">{{ $log->fed_at->format('M d, Y H:i') }}</td>
+                            <td class="py-3 px-4 font-mono font-bold text-cyan-400">{{ $log->tank?->tank_code }}</td>
+                            <td class="py-3 px-4 font-semibold text-white">{{ $log->food }}</td>
+                            <td class="py-3 px-4 text-slate-300">{{ $log->quantity ?? '--' }}</td>
+                            <td class="py-3 px-4 text-slate-400">{{ $log->notes ?? '--' }}</td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="5" class="py-8 text-center text-slate-500">No feeding events recorded.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div>{{ $logs->links() }}</div>
+    </div>
+</x-app-layout>

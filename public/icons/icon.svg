@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0891b2" />
+      <stop offset="50%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="108" fill="#020617" />
+  <rect x="24" y="24" width="464" height="464" rx="90" fill="url(#grad)" fill-opacity="0.15" stroke="#0891b2" stroke-width="8" />
+  <!-- stylized fish / wave motif -->
+  <path d="M 120 256 C 180 180, 300 180, 380 256 C 300 332, 180 332, 120 256 Z" fill="url(#grad)" />
+  <circle cx="330" cy="240" r="18" fill="#ffffff" />
+  <circle cx="335" cy="238" r="8" fill="#020617" />
+  <!-- tail fin -->
+  <path d="M 140 256 L 80 190 L 100 256 L 80 322 Z" fill="#38bdf8" />
+  <!-- dorsal fin -->
+  <path d="M 230 200 C 270 140, 310 160, 330 205 Z" fill="#38bdf8" opacity="0.9" />
+  <!-- water waves below -->
+  <path d="M 100 370 Q 180 340 256 370 T 412 370" fill="none" stroke="#38bdf8" stroke-width="14" stroke-linecap="round" />
+  <path d="M 140 410 Q 200 385 256 410 T 372 410" fill="none" stroke="#0891b2" stroke-width="10" stroke-linecap="round" opacity="0.7" />
+</svg>
