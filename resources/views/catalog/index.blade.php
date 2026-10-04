@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="farm-name" content="{{ $owner->farm_name ?? 'AquaForge Farm' }}">
     <title>{{ $owner->farm_name ?? 'AquaForge' }} ? Available Livestock & Breeder Catalog</title>
     
     <!-- OpenGraph for Facebook Sharing -->
@@ -19,17 +20,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="min-h-full flex flex-col bg-slate-950 font-sans antialiased text-slate-200" 
-      x-data="{ 
-          copiedToast: false,
-          fbModalOpen: false,
-          guideModalOpen: false,
-          copyText(txt) {
-              navigator.clipboard.writeText(txt).then(() => {
-                  this.copiedToast = true;
-                  setTimeout(() => this.copiedToast = false, 3000);
-              });
-          }
-      }">
+      x-data="catalogCart()">
 
     <!-- Toast Notification -->
     <div x-show="copiedToast" x-cloak 
@@ -41,7 +32,7 @@
          x-transition:leave-end="opacity-0 translate-y-2"
          class="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs shadow-2xl">
         <i data-lucide="check" class="w-4 h-4"></i>
-        <span>Link / Text copied to clipboard! Ready to paste on Facebook!</span>
+        <span x-text="toastMessage || 'Copied to clipboard!'"></span>
     </div>
 
     <!-- TOP NAV / BANNER -->
@@ -67,6 +58,13 @@
 
             <!-- Quick Action Buttons -->
             <div class="flex items-center gap-2">
+                <!-- Order Cart Button -->
+                <button type="button" @click="cartOpen = true" 
+                        class="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/70 text-xs font-bold transition shadow-sm">
+                    <i data-lucide="shopping-cart" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span>Order List</span>
+                    <span x-show="cartCount > 0" x-text="cartCount" class="ml-1 px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-extrabold"></span>
+                </button>
                 @if ($owner && $owner->messenger_url)
                     <a href="{{ $owner->messenger_url }}" target="_blank" 
                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-sm transition">
@@ -329,19 +327,20 @@
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-2">
-                                    @if ($owner && $owner->messenger_username)
-                                        <a href="{{ $messengerLink }}" target="_blank" 
-                                           class="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-sm transition">
-                                            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
-                                            <span>Inquire</span>
-                                        </a>
-                                    @else
-                                        <button type="button" @click="copyText('{{ route('catalog.show', $fish) }}')" 
-                                                class="flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold">
-                                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                                            <span>Copy Link</span>
-                                        </button>
-                                    @endif
+                                    <button type="button" 
+                                            @click="addToCart({
+                                                id: {{ $fish->id }},
+                                                code: '{{ $fish->livestock_code }}',
+                                                title: '{{ addslashes($fish->variety ?: $fish->species?->name) }}',
+                                                price: {{ $fish->purchase_price }},
+                                                grade: '{{ $fish->grade ?? "Standard" }}',
+                                                sex: '{{ $fish->sex }}',
+                                                photo: '{{ $fish->photo_url ?? "" }}'
+                                            })"
+                                            class="flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition">
+                                        <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                                        <span>+ Add Order</span>
+                                    </button>
 
                                     <a href="{{ route('catalog.show', $fish) }}" 
                                        class="flex items-center justify-center gap-1 px-2 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-medium border border-slate-700 transition">
@@ -502,74 +501,12 @@
         <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }}. Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span>.</p>
     </footer>
 
+    @include('catalog.partials.cart')
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             lucide.createIcons();
         });
     </script>
-
-    <!-- MODAL: Buyer Acclimation & Care Guide -->
-    <div x-show="guideModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md overflow-y-auto">
-        <div @click.away="guideModalOpen = false" class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 my-8">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-                <div class="flex items-center gap-2">
-                    <span class="p-1.5 rounded-lg bg-cyan-950 text-cyan-400 border border-cyan-800">
-                        <i data-lucide="heart" class="w-4 h-4"></i>
-                    </span>
-                    <h3 class="text-base font-bold text-white">Buyer Care & Acclimation Guide</h3>
-                </div>
-                <button @click="guideModalOpen = false" class="text-slate-400 hover:text-white">&times;</button>
-            </div>
-
-            <div class="space-y-4 text-xs text-slate-300 leading-relaxed max-h-[65vh] overflow-y-auto pr-2">
-                <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-                    <h4 class="font-bold text-cyan-300 flex items-center gap-1.5">
-                        <i data-lucide="clock" class="w-3.5 h-3.5"></i>
-                        Step 1: Temperature Acclimation (Float Bag 15-20 Mins)
-                    </h4>
-                    <p class="text-slate-400">
-                        Float the unopened sealed fish bag in your prepared aquarium for 15 to 20 minutes so the water temperature equalizes gradually. Avoid placing under direct strong aquarium lights.
-                    </p>
-                </div>
-
-                <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-                    <h4 class="font-bold text-cyan-300 flex items-center gap-1.5">
-                        <i data-lucide="droplet" class="w-3.5 h-3.5"></i>
-                        Step 2: Water Chemistry Equalization (Drip / Cup Method)
-                    </h4>
-                    <p class="text-slate-400">
-                        Open the bag and slowly add a small cup (about 20-30ml) of your tank water into the bag every 5 minutes for 20 minutes. This prevents osmotic and pH shock.
-                    </p>
-                </div>
-
-                <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-                    <h4 class="font-bold text-cyan-300 flex items-center gap-1.5">
-                        <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-                        Step 3: Gentle Release (Do Not Pour Bag Water)
-                    </h4>
-                    <p class="text-slate-400">
-                        Gently net your fish out of the shipping bag and release them into your aquarium. Discard the shipping bag water in the sink.
-                    </p>
-                </div>
-
-                <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-                    <h4 class="font-bold text-amber-300 flex items-center gap-1.5">
-                        <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
-                        First 24 Hours Protocol
-                    </h4>
-                    <p class="text-slate-400">
-                        Keep aquarium lights dimmed or turned off for the first 12 hours to reduce transport stress. <strong>Do not feed for the first 12-24 hours</strong> until the fish has fully settled.
-                    </p>
-                </div>
-            </div>
-
-            <div class="pt-3 border-t border-slate-800 flex justify-end">
-                <button type="button" @click="guideModalOpen = false" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold rounded-lg shadow-sm">
-                    Got it, thanks!
-                </button>
-            </div>
-        </div>
-    </div>
-
 </body>
 </html>

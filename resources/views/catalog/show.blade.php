@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="farm-name" content="{{ $owner->farm_name ?? 'AquaForge Farm' }}">
     <title>{{ $livestock->variety ?: $livestock->species?->name }} ({{ $livestock->livestock_code }}) ? {{ $owner->farm_name ?? 'AquaForge' }}</title>
     
     <!-- OpenGraph for Facebook Link Previews -->
@@ -22,21 +23,15 @@
 </head>
 <body class="min-h-full flex flex-col bg-slate-950 font-sans antialiased text-slate-200"
       x-data="{
-          activePhoto: '{{ $livestock->photo_url ?? '' }}',
-          copiedToast: false,
-          copyText(txt) {
-              navigator.clipboard.writeText(txt).then(() => {
-                  this.copiedToast = true;
-                  setTimeout(() => this.copiedToast = false, 3000);
-              });
-          }
+          ...catalogCart(),
+          activePhoto: '{{ $livestock->photo_url ?? "" }}'
       }">
 
     <!-- Toast Notification -->
     <div x-show="copiedToast" x-cloak 
          class="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs shadow-2xl">
         <i data-lucide="check" class="w-4 h-4"></i>
-        <span>Link / Text copied to clipboard! Ready to paste into Facebook!</span>
+        <span x-text="toastMessage || 'Copied to clipboard!'"></span>
     </div>
 
     <!-- HEADER -->
@@ -47,9 +42,11 @@
                 <span>Back to Full Stocklist</span>
             </a>
             <div class="flex items-center gap-2">
-                <button type="button" @click="copyText('{{ url()->current() }}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition">
-                    <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
-                    <span>Share Fish</span>
+                <button type="button" @click="cartOpen = true" 
+                        class="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/70 text-xs font-bold transition shadow-sm">
+                    <i data-lucide="shopping-cart" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span>Order List</span>
+                    <span x-show="cartCount > 0" x-text="cartCount" class="ml-1 px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-extrabold"></span>
                 </button>
             </div>
         </div>
@@ -198,11 +195,27 @@
                 @endphp
 
                 <div class="space-y-3 pt-2">
+                    <!-- Add to Order Button -->
+                    <button type="button" 
+                            @click="addToCart({
+                                id: {{ $livestock->id }},
+                                code: '{{ $livestock->livestock_code }}',
+                                title: '{{ addslashes($livestock->variety ?: $livestock->species?->name) }}',
+                                price: {{ $livestock->purchase_price }},
+                                grade: '{{ $livestock->grade ?? "Standard" }}',
+                                sex: '{{ $livestock->sex }}',
+                                photo: '{{ $livestock->photo_url ?? "" }}'
+                            })"
+                            class="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-emerald-950/40 transition transform hover:-translate-y-0.5">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                        <span>+ Add This Fish to Order List</span>
+                    </button>
+
                     @if ($messengerUrl)
                         <a href="{{ $messengerUrl }}" target="_blank" 
-                           class="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl shadow-blue-900/30 transition transform hover:-translate-y-0.5">
-                            <i data-lucide="message-circle" class="w-5 h-5"></i>
-                            <span>Inquire Directly on Facebook Messenger</span>
+                           class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold transition">
+                            <i data-lucide="message-circle" class="w-4 h-4 text-blue-400"></i>
+                            <span>Or Inquire Only This Fish on Messenger</span>
                         </a>
                     @endif
 
@@ -300,6 +313,8 @@
     <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
         <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }}. Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span>.</p>
     </footer>
+
+    @include('catalog.partials.cart')
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

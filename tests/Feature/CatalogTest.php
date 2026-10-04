@@ -56,7 +56,6 @@ class CatalogTest extends TestCase
             'purchase_price' => 2000.00,
         ]);
 
-        // Fish with non-available status shouldn't appear by default
         Livestock::create([
             'livestock_code' => 'GUP-002',
             'species_id' => $this->species->id,
@@ -72,8 +71,10 @@ class CatalogTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('AquaForge Manila');
         $response->assertSee('Albino Full Red');
-        $response->assertSee('?2,000.00');
-        $response->assertSee('m.me/AquaForgePH');
+        $response->assertSee('2,000.00');
+        $response->assertSee('Order Basket');
+        $response->assertSee('Send Order to Facebook Messenger & Await Reply');
+        $response->assertSee('Please wait for our confirmation reply and shipping fee before sending any payment');
         $response->assertDontSee('Blue Grass');
     }
 
@@ -101,20 +102,18 @@ class CatalogTest extends TestCase
             'purchase_price' => 500.00,
         ]);
 
-        // Search for Mosaic
         $response = $this->get(route('catalog.index', ['search' => 'Mosaic']));
         $response->assertStatus(200);
         $response->assertSee('Dumbo Ear Mosaic');
         $response->assertDontSee('Black Moscow');
 
-        // Filter for SHOW grade
         $responseGrade = $this->get(route('catalog.index', ['grade' => 'SHOW']));
         $responseGrade->assertStatus(200);
         $responseGrade->assertSee('Dumbo Ear Mosaic');
         $responseGrade->assertDontSee('Black Moscow');
     }
 
-    public function test_guest_can_view_single_fish_showcase_with_messenger_inquiry(): void
+    public function test_guest_can_view_single_fish_showcase_with_cart_and_messenger_inquiry(): void
     {
         $fish = Livestock::create([
             'livestock_code' => 'GUP-888',
@@ -133,8 +132,10 @@ class CatalogTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Platinum Red Tail Dumbo');
         $response->assertSee('GUP-888');
-        $response->assertSee('?3,500.00');
-        $response->assertSee('m.me/AquaForgePH');
+        $response->assertSee('3,500.00');
+        $response->assertSee('+ Add This Fish to Order List');
+        $response->assertSee('Order Basket');
+        $response->assertSee('Send Order to Facebook Messenger & Await Reply');
         $response->assertSee('Pristine dorsal finnage');
     }
 
