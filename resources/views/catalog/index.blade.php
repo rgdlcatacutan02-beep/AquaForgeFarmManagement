@@ -109,10 +109,6 @@
                             </form>
                         </div>
                     @endif
-                @else
-                    <a href="{{ route('login') }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700">
-                        <span>Staff Login</span>
-                    </a>
                 @endauth
             </div>
         </div>
