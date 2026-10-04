@@ -48,13 +48,13 @@
                     <span>Back to Full Stocklist</span>
                 </a>
                 <span class="text-slate-700 hidden sm:inline">&bull;</span>
-                <div class="hidden sm:flex items-center gap-2">
+                <a href="{{ url('/') }}" class="hidden sm:flex items-center gap-2 hover:opacity-90 transition group" title="Go to Welcome / Home">
                     @if($owner && $owner->farm_logo_url)
-                        <img src="{{ $owner->farm_logo_url }}" alt="Logo" class="w-5 h-5 object-contain rounded">
+                        <img src="{{ $owner->farm_logo_url }}" alt="Logo" class="w-5 h-5 object-contain rounded group-hover:scale-105 transition">
                     @endif
-                    <span class="text-xs font-bold text-slate-300">{{ $owner->farm_name ?? 'AquaForge Farm' }}</span>
+                    <span class="text-xs font-bold text-slate-300 group-hover:text-cyan-300 transition">{{ $owner->farm_name ?? 'AquaForge Farm' }}</span>
                     <span class="text-[9px] text-cyan-400 font-mono tracking-wider uppercase font-semibold">Powered by AquaForge</span>
-                </div>
+                </a>
             </div>
             <div class="flex items-center gap-2">
                 <button type="button" @click="guideModalOpen = true" 
@@ -286,14 +286,14 @@
                 <!-- Breeder contact and payment info -->
                 <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-2">
                     <div class="flex items-center justify-between text-slate-300">
-                        <span class="font-bold flex items-center gap-2">
+                        <a href="{{ url('/') }}" class="font-bold flex items-center gap-2 hover:text-cyan-300 transition group" title="Go to Welcome / Home">
                             @if($owner && $owner->farm_logo_url)
-                                <img src="{{ $owner->farm_logo_url }}" alt="Logo" class="w-5 h-5 object-contain rounded p-0.5 bg-slate-950 border border-slate-700">
+                                <img src="{{ $owner->farm_logo_url }}" alt="Logo" class="w-5 h-5 object-contain rounded p-0.5 bg-slate-950 border border-slate-700 group-hover:border-cyan-500 transition">
                             @else
                                 <i data-lucide="store" class="w-3.5 h-3.5 text-cyan-400"></i>
                             @endif
-                            <span>{{ $owner->farm_name ?? 'AquaForge Farm' }}</span>
-                        </span>
+                            <span class="group-hover:text-cyan-300 transition">{{ $owner->farm_name ?? 'AquaForge Farm' }}</span>
+                        </a>
                         <span>{{ $owner->farm_location ?? 'Philippines' }}</span>
                     </div>
                     @if ($owner && $owner->contact_number)
