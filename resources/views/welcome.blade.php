@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="AquaForge Aquatic Farm & Breeding Management System">
     <!-- Favicon & Mobile Icons -->
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
     <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
@@ -193,7 +194,7 @@
         <footer class="py-6 border-t border-slate-900 bg-slate-950/80 text-xs text-slate-500">
             <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
-                    {{ $owner->farm_name ?? 'AquaForge' }} &copy; {{ date('Y') }} &bull; Aquatic Farm & Breeding Management System &bull; <span class="text-cyan-400 font-semibold">Powered by AquaForge System</span> &bull; Built with pride by <span class="text-cyan-400 font-semibold">rgdlcTech</span>
+                    &copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }} &bull; <span class="text-cyan-400 font-semibold">Powered by AquaForge System</span>
                 </div>
 
                 <!-- Hidden Admin Portal Access -->
