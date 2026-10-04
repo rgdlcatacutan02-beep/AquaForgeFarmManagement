@@ -1,5 +1,5 @@
 <x-app-layout title="{{ $livestock->livestock_code }} - {{ $livestock->variety ?: $livestock->species?->name }}">
-    <div class="space-y-6" x-data="{ reassignModal: false, statusModal: false }">
+    <div class="space-y-6" x-data="{ reassignModal: false, statusModal: false, socialCardModal: false, askingPrice: '{{ number_format($livestock->purchase_price, 2, '.', '') }}\', copiedToast: false }">
         <!-- Breadcrumb & Action Header -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div class="flex items-center gap-2 text-sm text-slate-400">
@@ -9,18 +9,26 @@
                 <span>/</span>
                 <span class="text-white">{{ $livestock->variety ?: $livestock->species?->name }}</span>
             </div>
-            <div class="flex items-center gap-2.5">
+            <div class="flex flex-wrap items-center gap-2">
+                <button @click="socialCardModal = true" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/30 hover:bg-blue-600/50 text-blue-300 text-xs font-semibold rounded-lg border border-blue-800/60 transition shadow-sm">
+                    <i data-lucide="share-2" class="w-3.5 h-3.5 text-blue-400"></i>
+                    <span>FB / Messenger Card</span>
+                </button>
+                <a href="{{ route('catalog.show', $livestock) }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 transition">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 text-cyan-400"></i>
+                    <span>Public View</span>
+                </a>
                 <button @click="reassignModal = true" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition">
                     <i data-lucide="shuffle" class="w-3.5 h-3.5 text-cyan-400"></i>
-                    Move Tank
+                    <span>Move Tank</span>
                 </button>
                 <button @click="statusModal = true" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition">
                     <i data-lucide="tag" class="w-3.5 h-3.5 text-amber-400"></i>
-                    Status
+                    <span>Status</span>
                 </button>
                 <a href="{{ route('livestock.edit', $livestock) }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold rounded-lg shadow-md shadow-cyan-950/40 transition">
                     <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
-                    Edit Specimen
+                    <span>Edit</span>
                 </a>
             </div>
         </div>
@@ -317,5 +325,233 @@
                 </form>
             </div>
         </div>
+
+        <!-- SOCIAL MEDIA FISH CARD & FACEBOOK POST MODAL -->
+        @php
+            $farmOwner = auth()->user() ?? \App\Models\User::first();
+            $catalogSingleUrl = route('catalog.show', $livestock);
+            $messengerDeepUrl = $farmOwner && $farmOwner->messenger_username ? "https://m.me/" . ltrim($farmOwner->messenger_username, '@') : "";
+            $speciesName = $livestock->species?->name ?? 'Fish';
+            $strainName = $livestock->variety ?: $speciesName;
+            $tankCode = $livestock->tank?->tank_code ?? 'Tank A-01';
+            $farmTitle = $farmOwner->farm_name ?? 'AquaForge Farm';
+            $farmLoc = $farmOwner->farm_location ?? 'Philippines';
+        @endphp
+        <div x-show="socialCardModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md overflow-y-auto">
+            <div @click.away="socialCardModal = false" class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-5 my-8">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <span class="p-1.5 rounded-lg bg-blue-950 text-blue-400 border border-blue-800">
+                            <i data-lucide="facebook" class="w-4 h-4"></i>
+                        </span>
+                        <div>
+                            <h3 class="text-base font-bold text-white">Social Media Fish Card & Messenger Post</h3>
+                            <p class="text-xs text-slate-400">Generate a branded graphic card and 1-click caption for Facebook groups and Messenger.</p>
+                        </div>
+                    </div>
+                    <button @click="socialCardModal = false" class="text-slate-400 hover:text-white text-lg">&times;</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+                    <!-- Left: Graphic Card Preview (Canvas) -->
+                    <div class="space-y-3">
+                        <div class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center justify-between">
+                            <span>Image Card Preview</span>
+                            <span class="text-[10px] text-cyan-400 font-mono">PNG 800x800</span>
+                        </div>
+                        <div class="aspect-square w-full rounded-xl bg-slate-950 border border-slate-800 overflow-hidden shadow-inner flex items-center justify-center">
+                            <canvas id="fishSocialCanvas" width="800" height="800" class="w-full h-full object-contain"></canvas>
+                        </div>
+                        <button type="button" @click="downloadCard()" 
+                                class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-lg shadow-sm transition">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Download Branded Card (PNG)</span>
+                        </button>
+                    </div>
+
+                    <!-- Right: Facebook Post Caption & Customizer -->
+                    <div class="space-y-4 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Asking Price (in Philippine Peso ?)</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2 text-emerald-400 font-bold font-mono">?</span>
+                                <input type="number" step="50" x-model="askingPrice" @input="renderCard()"
+                                       class="w-full pl-8 pr-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white font-mono text-sm focus:ring-1 focus:ring-cyan-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="text-slate-300 font-medium">Facebook Group Post Text</label>
+                                <span class="text-[10px] text-slate-500">Ready to copy</span>
+                            </div>
+                            <textarea id="fbPostCaptionText" readonly rows="7" 
+                                      class="w-full rounded-lg bg-slate-950 border border-slate-700 text-[11px] font-mono text-slate-300 p-2.5 leading-relaxed focus:ring-0"
+                                      :value="`?? AVAILABLE: {{ $strainName }} ({{ $speciesName }}) ??\n\n` +
+                                              `?? Quality Grade: {{ $livestock->grade ?? 'Show Grade' }}\n` +
+                                              `? Sex / Package: {{ $livestock->sex }}\n` +
+                                              `?? Price: ?${parseFloat(askingPrice || 0).toLocaleString('en-US', {minimumFractionDigits: 2})}\n` +
+                                              `?? Location: {{ $farmLoc }}\n` +
+                                              `?? Payments: GCash / Maya Accepted\n` +
+                                              `?? Delivery: Lalamove / Grab / Busway\n\n` +
+                                              `?? View HD Photos & Specs on our Catalog:\n{{ $catalogSingleUrl }}\n\n` +
+                                              `?? Direct Messenger Inquiry:\n{{ $messengerDeepUrl }}\n\n` +
+                                              `#AquaForge #GuppyPH #BettaPH #FishKeepingPH #AquariumPhilippines`"></textarea>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button type="button" @click="navigator.clipboard.writeText(document.getElementById('fbPostCaptionText').value); copiedToast = true; setTimeout(() => copiedToast = false, 3000)" 
+                                    class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-lg transition shadow-sm">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                <span>Copy FB Caption</span>
+                            </button>
+                            @if ($farmOwner && $farmOwner->messenger_username)
+                                <a href="{{ $messengerDeepUrl }}" target="_blank" 
+                                   class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs rounded-lg border border-slate-700 transition" title="Open Messenger">
+                                    <i data-lucide="message-circle" class="w-3.5 h-3.5 text-blue-400"></i>
+                                </a>
+                            @endif
+                        </div>
+
+                        <div x-show="copiedToast" x-cloak class="p-2 rounded-lg bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-[11px] flex items-center gap-1.5 font-semibold">
+                            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                            <span>Caption copied! Paste directly into Facebook post or Messenger!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Card Rendering Script -->
+        <script>
+            function renderCard() {
+                const canvas = document.getElementById('fishSocialCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const w = canvas.width;
+                const h = canvas.height;
+
+                // Background
+                const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+                bgGrad.addColorStop(0, '#030712');
+                bgGrad.addColorStop(0.5, '#082f49');
+                bgGrad.addColorStop(1, '#020617');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, w, h);
+
+                // Top Header Banner
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.7)';
+                ctx.fillRect(40, 30, w - 80, 70);
+                ctx.strokeStyle = '#0284c7';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(40, 30, w - 80, 70);
+
+                // Farm Name
+                ctx.fillStyle = '#38bdf8';
+                ctx.font = 'bold 24px sans-serif';
+                ctx.fillText('{{ addslashes($farmTitle) }}', 60, 72);
+
+                // Location / Direct Badge
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '16px sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText('?? {{ addslashes($farmLoc) }}', w - 60, 72);
+                ctx.textAlign = 'left';
+
+                // Image placeholder or loaded image
+                const fishImg = new Image();
+                fishImg.crossOrigin = 'anonymous';
+                const photoSrc = '{{ $livestock->photo_url ?? "" }}';
+
+                function drawForeground() {
+                    // Variety / Strain Title
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = 'bold 36px sans-serif';
+                    ctx.fillText('{{ addslashes($strainName) }}', 40, 580);
+
+                    // Subtitle / Species & Sex
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.font = 'bold 22px sans-serif';
+                    ctx.fillText('{{ addslashes($speciesName) }} ? {{ $livestock->sex }} ? {{ $tankCode }}', 40, 615);
+
+                    // Grade Badge
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.fillRect(40, 635, 180, 35);
+                    ctx.fillStyle = '#0f172a';
+                    ctx.font = 'bold 16px sans-serif';
+                    ctx.fillText('? {{ $livestock->grade ?? "SHOW GRADE" }}', 55, 658);
+
+                    // Asking Price
+                    const priceVal = parseFloat(window.Alpine ? Alpine.$data(document.querySelector('[x-data]')).askingPrice : '{{ $livestock->purchase_price }}') || 0;
+                    ctx.fillStyle = '#10b981';
+                    ctx.font = 'bold 44px monospace';
+                    ctx.textAlign = 'right';
+                    ctx.fillText('?' + priceVal.toLocaleString('en-US', {minimumFractionDigits: 2}), w - 40, 660);
+                    ctx.textAlign = 'left';
+
+                    // Bottom Bar
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fillRect(40, 700, w - 80, 70);
+                    ctx.strokeStyle = '#334155';
+                    ctx.strokeRect(40, 700, w - 80, 70);
+
+                    ctx.fillStyle = '#e2e8f0';
+                    ctx.font = 'bold 16px sans-serif';
+                    ctx.fillText('?? GCash / Maya Accepted  ?  ?? Lalamove / Grab', 60, 742);
+
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.font = 'bold 15px sans-serif';
+                    ctx.textAlign = 'right';
+                    ctx.fillText('?? Inquire via Messenger', w - 60, 742);
+                    ctx.textAlign = 'left';
+                }
+
+                if (photoSrc) {
+                    fishImg.onload = function() {
+                        // Draw rounded image container in center
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.roundRect(40, 120, w - 80, 420, 16);
+                        ctx.clip();
+                        ctx.drawImage(fishImg, 40, 120, w - 80, 420);
+                        ctx.restore();
+                        drawForeground();
+                    };
+                    fishImg.onerror = function() {
+                        drawDefaultImage();
+                        drawForeground();
+                    };
+                    fishImg.src = photoSrc;
+                } else {
+                    drawDefaultImage();
+                    drawForeground();
+                }
+
+                function drawDefaultImage() {
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fillRect(40, 120, w - 80, 420);
+                    ctx.fillStyle = '#475569';
+                    ctx.font = 'bold 24px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('?? {{ addslashes($strainName) }}', w / 2, 330);
+                    ctx.font = '16px sans-serif';
+                    ctx.fillText('Live Fish Specimen', w / 2, 360);
+                    ctx.textAlign = 'left';
+                }
+            }
+
+            function downloadCard() {
+                const canvas = document.getElementById('fishSocialCanvas');
+                const link = document.createElement('a');
+                link.download = '{{ $livestock->livestock_code }}-social-card.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(renderCard, 300);
+            });
+        </script>
+
     </div>
 </x-app-layout>

@@ -144,6 +144,73 @@
                     </div>
                 </div>
             </div>
+
+            <!-- PHILIPPINE SCAN-TO-PAY BOX (GCash / Maya) -->
+            @php
+                $farmUser = auth()->user() ?? \App\Models\User::first();
+            @endphp
+            @if ($farmUser && ($farmUser->gcash_number || $farmUser->maya_number || $farmUser->gcash_qr_path || $farmUser->bank_details))
+                <div class="mt-6 p-4 rounded-xl bg-slate-950/70 print:bg-slate-50 border border-slate-800 print:border-slate-300" x-data="{ copiedNumber: false }">
+                    <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 print:border-slate-200 pb-2">
+                        <div class="text-xs font-bold text-white print:text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="qr-code" class="w-4 h-4 text-emerald-400 print:text-emerald-700"></i>
+                            <span>Scan-to-Pay Instructions (GCash / Maya)</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400 print:text-slate-500">Fast & Verified Payment</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        @if ($farmUser->gcash_number || $farmUser->gcash_qr_path)
+                            <div class="p-3 rounded-lg bg-blue-950/30 print:bg-blue-50/50 border border-blue-800/40 print:border-blue-200 flex items-center gap-3">
+                                @if ($farmUser->gcash_qr_path)
+                                    <div class="p-1 rounded bg-white shadow-sm flex-shrink-0">
+                                        <img src="{{ asset('storage/' . $farmUser->gcash_qr_path) }}" alt="GCash QR" class="w-16 h-16 object-contain">
+                                    </div>
+                                @endif
+                                <div class="flex-1 min-w-0">
+                                    <span class="text-[10px] font-bold text-blue-400 print:text-blue-700 uppercase">GCash Account</span>
+                                    <div class="font-bold text-white print:text-slate-900 font-mono text-sm flex items-center gap-2">
+                                        <span>{{ $farmUser->gcash_number }}</span>
+                                        @if ($farmUser->gcash_number)
+                                            <button type="button" @click="navigator.clipboard.writeText('{{ $farmUser->gcash_number }}'); copiedNumber = true; setTimeout(() => copiedNumber = false, 2000)" 
+                                                    class="p-1 text-slate-400 hover:text-white print:hidden" title="Copy Number">
+                                                <i data-lucide="copy" class="w-3 h-3"></i>
+                                            </button>
+                                        @endif
+                                    </div>
+                                    <div class="text-[11px] text-slate-300 print:text-slate-700 truncate">{{ $farmUser->gcash_name }}</div>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if ($farmUser->maya_number)
+                            <div class="p-3 rounded-lg bg-emerald-950/30 print:bg-emerald-50/50 border border-emerald-800/40 print:border-emerald-200 flex items-center gap-3">
+                                <div class="flex-1 min-w-0">
+                                    <span class="text-[10px] font-bold text-emerald-400 print:text-emerald-700 uppercase">Maya Account</span>
+                                    <div class="font-bold text-white print:text-slate-900 font-mono text-sm flex items-center gap-2">
+                                        <span>{{ $farmUser->maya_number }}</span>
+                                        <button type="button" @click="navigator.clipboard.writeText('{{ $farmUser->maya_number }}'); copiedNumber = true; setTimeout(() => copiedNumber = false, 2000)" 
+                                                class="p-1 text-slate-400 hover:text-white print:hidden" title="Copy Number">
+                                            <i data-lucide="copy" class="w-3 h-3"></i>
+                                        </button>
+                                    </div>
+                                    <div class="text-[11px] text-slate-300 print:text-slate-700 truncate">{{ $farmUser->maya_name }}</div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                    @if ($farmUser->bank_details)
+                        <div class="mt-2.5 pt-2 border-t border-slate-800/80 print:border-slate-200 text-[11px] text-slate-400 print:text-slate-600">
+                            <strong>Bank Transfer:</strong> {{ $farmUser->bank_details }}
+                        </div>
+                    @endif
+
+                    <div x-show="copiedNumber" x-cloak class="mt-2 text-[10px] font-bold text-emerald-400 print:hidden">
+                        ? Account number copied to clipboard!
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

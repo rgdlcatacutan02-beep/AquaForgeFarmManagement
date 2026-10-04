@@ -39,7 +39,7 @@
             <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
             <span>Quick Tank Actions</span>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
             <button @click="activeModal = 'waterTest'" 
                     class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-cyan-950/70 hover:bg-cyan-900/80 text-cyan-300 border border-cyan-800/60 text-xs font-semibold transition-all">
                 <i data-lucide="droplet" class="w-4 h-4 text-cyan-400"></i>
@@ -59,6 +59,11 @@
                     class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-amber-950/70 hover:bg-amber-900/80 text-amber-300 border border-amber-800/60 text-xs font-semibold transition-all">
                 <i data-lucide="wrench" class="w-4 h-4 text-amber-400"></i>
                 <span>Maintenance</span>
+            </button>
+            <button @click="activeModal = 'addFishPhoto'" 
+                    class="col-span-2 sm:col-span-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-purple-950/70 hover:bg-purple-900/80 text-purple-300 border border-purple-800/60 text-xs font-semibold transition-all">
+                <i data-lucide="camera" class="w-4 h-4 text-purple-400"></i>
+                <span>Add Fish Photo</span>
             </button>
         </div>
 
@@ -183,6 +188,53 @@
                     <div class="flex justify-end gap-2 pt-2">
                         <button type="button" @click="activeModal = null" class="px-3 py-1.5 rounded bg-slate-800 text-slate-300 text-xs">Cancel</button>
                         <button type="submit" class="px-3 py-1.5 rounded bg-teal-600 text-white font-semibold text-xs">Save Record</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: Add Fish Photo for this Tank -->
+        <div x-show="activeModal === 'addFishPhoto'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+            <div @click.away="activeModal = null" class="bg-slate-900 border border-slate-800 rounded-xl p-5 max-w-md w-full shadow-2xl">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i data-lucide="camera" class="w-4 h-4 text-purple-400"></i>
+                        Add Fish Photo for {{ $tank->tank_code }}
+                    </h3>
+                    <button @click="activeModal = null" class="text-slate-400 hover:text-white">&times;</button>
+                </div>
+                <form action="{{ route('tanks.photos.store', $tank) }}" method="POST" enctype="multipart/form-data" class="mt-4 space-y-3">
+                    @csrf
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300">Select Photo <span class="text-rose-400">*</span></label>
+                        <input type="file" name="photo" accept="image/*" required class="mt-1 block w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-900/60 file:text-purple-300 hover:file:bg-purple-800">
+                        <p class="text-[10px] text-slate-500 mt-1">JPEG, PNG, or WebP up to 10MB</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300">Caption / Notes</label>
+                        <input type="text" name="caption" placeholder="e.g. Dorsal fin growth at 3 months, pair courting..." class="mt-1 block w-full rounded-lg bg-slate-950 border border-slate-700 text-xs text-white px-3 py-2 focus:ring-1 focus:ring-purple-500">
+                    </div>
+                    @if ($tank->livestock->isNotEmpty())
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300">Tag Specific Fish in Tank (Optional)</label>
+                            <select name="livestock_id" class="mt-1 block w-full rounded-lg bg-slate-950 border border-slate-700 text-xs text-white px-3 py-2 focus:ring-1 focus:ring-purple-500">
+                                <option value="">-- General Tank / Colony Photo --</option>
+                                @foreach ($tank->livestock as $animal)
+                                    <option value="{{ $animal->id }}">{{ $animal->livestock_code }} - {{ $animal->variety ?: $animal->species?->name }} ({{ $animal->sex }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2 pt-1">
+                            <input type="checkbox" id="set_as_avatar" name="set_as_avatar" value="1" class="rounded bg-slate-950 border-slate-700 text-purple-600 focus:ring-0">
+                            <label for="set_as_avatar" class="text-xs text-slate-300 cursor-pointer">Also set as this fish's main profile avatar</label>
+                        </div>
+                    @endif
+                    <div class="pt-2 flex justify-end gap-2">
+                        <button type="button" @click="activeModal = null" class="px-3 py-1.5 bg-slate-800 text-slate-300 text-xs rounded-lg hover:bg-slate-700">Cancel</button>
+                        <button type="submit" class="px-4 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-sm">
+                            <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                            <span>Upload Photo</span>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -317,6 +369,80 @@
                     @endif
                 </div>
             </div>
+
+            <!-- TANK & FISH PHOTO GALLERY -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm" x-data="{ lightboxImage: null, lightboxCaption: null }">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800/80">
+                    <div class="flex items-center gap-2">
+                        <span class="p-1 rounded bg-purple-950 text-purple-400 border border-purple-800/60">
+                            <i data-lucide="image" class="w-4 h-4"></i>
+                        </span>
+                        <h2 class="text-sm font-semibold text-white">Tank & Fish Photo Gallery</h2>
+                        <span class="text-xs text-slate-400">({{ $tank->photos->count() }} photo{{ $tank->photos->count() === 1 ? '' : 's' }})</span>
+                    </div>
+                    <button type="button" @click="activeModal = 'addFishPhoto'" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-purple-950/80 hover:bg-purple-900 text-purple-300 border border-purple-800/60 text-xs font-medium transition">
+                        <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+                        <span>+ Add Photo</span>
+                    </button>
+                </div>
+
+                @if ($tank->photos->isNotEmpty())
+                    <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        @foreach ($tank->photos as $photo)
+                            <div class="group relative rounded-lg bg-slate-950 border border-slate-800 overflow-hidden shadow-sm hover:border-purple-700/60 transition">
+                                <div class="aspect-video w-full bg-slate-900 overflow-hidden cursor-pointer"
+                                     @click="lightboxImage = '{{ $photo->photo_url }}'; lightboxCaption = '{{ addslashes($photo->caption ?? '') }}'">
+                                    <img src="{{ $photo->photo_url }}" alt="{{ $photo->caption ?? 'Tank Photo' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200">
+                                </div>
+                                <div class="p-2 space-y-1">
+                                    @if ($photo->caption)
+                                        <p class="text-[11px] text-slate-200 font-medium line-clamp-1" title="{{ $photo->caption }}">{{ $photo->caption }}</p>
+                                    @endif
+                                    <div class="flex items-center justify-between text-[10px] text-slate-400">
+                                        @if ($photo->livestock)
+                                            <a href="{{ route('livestock.show', $photo->livestock) }}" class="inline-flex items-center gap-1 text-cyan-400 hover:underline">
+                                                <i data-lucide="tag" class="w-2.5 h-2.5"></i>
+                                                <span>{{ $photo->livestock->livestock_code }}</span>
+                                            </a>
+                                        @else
+                                            <span class="text-slate-500">Colony</span>
+                                        @endif
+                                        <span>{{ $photo->created_at->diffForHumans(null, true) }}</span>
+                                    </div>
+                                </div>
+                                <!-- Delete Button -->
+                                <form action="{{ route('tanks.photos.destroy', $photo) }}" method="POST" onsubmit="return confirm('Remove this photo?');" class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="p-1 rounded bg-rose-950/90 text-rose-300 hover:bg-rose-900 hover:text-white border border-rose-800/80 shadow">
+                                        <i data-lucide="trash-2" class="w-3 h-3"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="mt-4 py-8 text-center rounded-lg bg-slate-950/40 border border-dashed border-slate-800">
+                        <i data-lucide="camera" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i>
+                        <p class="text-xs text-slate-400 font-medium">No fish pictures added to this tank yet.</p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Take photos of your breeding pairs or growout fry to track development and post to Facebook!</p>
+                        <button type="button" @click="activeModal = 'addFishPhoto'" class="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold shadow-sm transition">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                            <span>Upload First Fish Photo</span>
+                        </button>
+                    </div>
+                @endif
+
+                <!-- Lightbox Modal -->
+                <div x-show="lightboxImage" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md" @click="lightboxImage = null">
+                    <div class="relative max-w-4xl max-h-[90vh] bg-slate-900 rounded-xl overflow-hidden border border-slate-800 shadow-2xl" @click.stop>
+                        <button @click="lightboxImage = null" class="absolute top-3 right-3 p-1.5 rounded-full bg-slate-950/80 text-slate-400 hover:text-white z-10">&times;</button>
+                        <img :src="lightboxImage" class="max-h-[80vh] w-auto mx-auto object-contain">
+                        <div x-show="lightboxCaption" class="p-3 text-xs text-center text-slate-300 bg-slate-950/90 border-t border-slate-800" x-text="lightboxCaption"></div>
+                    </div>
+                </div>
+            </div>
+
 
             <!-- Feeding & Maintenance Activity Section (Phase 4) -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -107,6 +107,18 @@
             </div>
         </div>
 
+        <!-- Section: PUBLIC STOREFRONT -->
+        <div class="pt-2 border-t border-slate-800/80">
+            <a href="{{ route('catalog.index') }}" target="_blank"
+               class="flex items-center justify-between px-3 py-2 rounded-lg font-medium transition-all text-cyan-300 bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-800/40 group">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="store" class="w-4 h-4 text-cyan-400"></i>
+                    <span>Public Catalog</span>
+                </div>
+                <i data-lucide="external-link" class="w-3.5 h-3.5 text-cyan-500 group-hover:text-cyan-300 transition"></i>
+            </a>
+        </div>
+
         <!-- Section: REPORTS & SETTINGS -->
         <div class="pt-2 border-t border-slate-800/80 space-y-1">
             <a href="{{ route('reports.index') }}" 

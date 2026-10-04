@@ -79,4 +79,9 @@ class Tank extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function photos(): HasMany
+    {
+        return $this->hasMany(TankPhoto::class)->latest();
+    }
 }
