@@ -3,6 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon & Mobile Icons -->
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
         <meta name="farm-name" content="{{ $owner->farm_name ?? 'AquaForge Farm' }}">
     <title>{{ $livestock->variety ?: $livestock->species?->name }} ({{ $livestock->livestock_code }}) ? {{ $owner->farm_name ?? 'AquaForge' }}</title>
     
