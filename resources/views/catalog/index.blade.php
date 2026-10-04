@@ -484,7 +484,7 @@
 
     <!-- FOOTER -->
     <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }}. Managed with AquaForge Aquatic Farm & Breeding Management System.</p>
+        <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }}. Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span>.</p>
     </footer>
 
     <script>
