@@ -97,15 +97,28 @@
         <div>
             <div class="px-3 mb-2 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">Business</div>
             <div class="space-y-1">
-                <a href="{{ route('inventory.index') }}" 
-                   class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all {{ request()->routeIs('inventory.*') ? 'bg-cyan-950/70 text-cyan-300 border border-cyan-800/50' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60' }}">
-                    <i data-lucide="package" class="w-4 h-4"></i>
-                    <span>Inventory</span>
+                @php
+                    $navAvailableCount = \App\Models\Livestock::where('status', 'AVAILABLE')->count();
+                @endphp
+                <a href="{{ route('available-fish.index') }}" 
+                   class="flex items-center justify-between px-3 py-2 rounded-lg font-medium transition-all {{ request()->routeIs('available-fish.*') ? 'bg-cyan-950/70 text-cyan-300 border border-cyan-800/50' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60' }}">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="tag" class="w-4 h-4 text-emerald-400"></i>
+                        <span>Available Fish</span>
+                    </div>
+                    <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold {{ $navAvailableCount > 0 ? 'bg-emerald-950 text-emerald-300 border border-emerald-800/70' : 'bg-slate-800 text-slate-400' }}">
+                        {{ $navAvailableCount }}
+                    </span>
                 </a>
                 <a href="{{ route('sales.index') }}" 
                    class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all {{ request()->routeIs('sales.*') ? 'bg-cyan-950/70 text-cyan-300 border border-cyan-800/50' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60' }}">
                     <i data-lucide="shopping-bag" class="w-4 h-4"></i>
                     <span>Sales</span>
+                </a>
+                <a href="{{ route('inventory.index') }}" 
+                   class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all {{ request()->routeIs('inventory.*') ? 'bg-cyan-950/70 text-cyan-300 border border-cyan-800/50' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60' }}">
+                    <i data-lucide="package" class="w-4 h-4"></i>
+                    <span>Inventory</span>
                 </a>
                 <a href="{{ route('customers.index') }}" 
                    class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all {{ request()->routeIs('customers.*') ? 'bg-cyan-950/70 text-cyan-300 border border-cyan-800/50' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60' }}">

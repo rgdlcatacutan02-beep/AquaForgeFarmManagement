@@ -65,20 +65,24 @@ class ProfileController extends Controller
     public function updatePayment(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'farm_name' => 'nullable|string|max:100',
+            'farm_name' => 'required|string|max:100',
             'farm_location' => 'nullable|string|max:150',
-            'farm_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:4096',
+            'farm_logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp,ico,jfif|max:20480',
             'remove_farm_logo' => 'nullable|boolean',
             'messenger_username' => 'nullable|string|max:100',
             'facebook_page' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:50',
             'gcash_name' => 'nullable|string|max:100',
             'gcash_number' => 'nullable|string|max:50',
-            'gcash_qr' => 'nullable|image|max:2048',
+            'gcash_qr' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:20480',
             'maya_name' => 'nullable|string|max:100',
             'maya_number' => 'nullable|string|max:50',
             'bank_details' => 'nullable|string|max:500',
             'shipping_notes' => 'nullable|string|max:500',
+        ], [
+            'farm_logo.mimes' => 'The logo must be an image file (PNG, JPG, SVG, WebP, GIF, or BMP).',
+            'farm_logo.max' => 'The logo file size must not exceed 20MB.',
+            'gcash_qr.max' => 'The GCash QR file size must not exceed 20MB.',
         ]);
 
         $user = $request->user();

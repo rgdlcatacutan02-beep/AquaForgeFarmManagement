@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AvailableFishController;
 use App\Http\Controllers\BreedingEventController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CustomerController;
@@ -70,6 +71,13 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::resource('maintenance', MaintenanceLogController::class)->only(['index', 'create', 'store', 'destroy']);
 
     // Business & Financial Operations
+    // Available Fish & Catalog Management (Add fish for sale & put on public catalog)
+    Route::get('available-fish', [AvailableFishController::class, 'index'])->name('available-fish.index');
+    Route::get('available-fish/create', [AvailableFishController::class, 'create'])->name('available-fish.create');
+    Route::post('available-fish', [AvailableFishController::class, 'store'])->name('available-fish.store');
+    Route::post('available-fish/{livestock}/toggle-catalog', [AvailableFishController::class, 'toggleCatalog'])->name('available-fish.toggle-catalog');
+    Route::patch('available-fish/{livestock}/price', [AvailableFishController::class, 'updatePrice'])->name('available-fish.update-price');
+
     Route::resource('inventory', InventoryItemController::class)->except(['show']);
     Route::resource('sales', SaleController::class);
     Route::resource('customers', CustomerController::class);

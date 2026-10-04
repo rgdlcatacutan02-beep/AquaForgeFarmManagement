@@ -20,6 +20,20 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="mt-4 p-4 bg-rose-950/90 border border-rose-800 rounded-xl text-rose-200 text-xs space-y-1.5 shadow-lg">
+            <div class="font-bold text-rose-300 flex items-center gap-2 text-sm">
+                <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400"></i>
+                <span>Please fix the following issues:</span>
+            </div>
+            <ul class="list-disc list-inside text-xs space-y-0.5 pl-1">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form method="post" action="{{ route('profile.payment.update') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
         @csrf
         @method('patch')
@@ -39,32 +53,37 @@
             </div>
 
             <!-- Farm Logo Upload & Preview -->
-            <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col sm:flex-row items-center gap-5">
+            <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col sm:flex-row items-center gap-5"
+                 x-data="{ logoPreview: '{{ $user->farm_logo_url }}' }">
                 <div class="relative flex-shrink-0">
-                    @if ($user->farm_logo_url)
-                        <img src="{{ $user->farm_logo_url }}" alt="{{ $user->farm_name }}" 
-                             class="w-20 h-20 rounded-2xl object-cover bg-slate-950 border-2 border-cyan-500/50 shadow-lg shadow-cyan-950">
-                    @else
+                    <template x-if="logoPreview">
+                        <img :src="logoPreview" alt="{{ $user->farm_name }}" 
+                             class="w-20 h-20 rounded-2xl object-contain bg-slate-950 border-2 border-cyan-500/50 shadow-lg shadow-cyan-950 p-1">
+                    </template>
+                    <template x-if="!logoPreview">
                         <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-cyan-600 to-teal-500 p-0.5 shadow-lg shadow-cyan-950 flex items-center justify-center">
                             <div class="w-full h-full bg-slate-950 rounded-[14px] flex flex-col items-center justify-center text-cyan-400">
                                 <i data-lucide="waves" class="w-8 h-8 text-cyan-400"></i>
                                 <span class="text-[8px] font-mono font-bold text-teal-300 uppercase mt-0.5">Default</span>
                             </div>
                         </div>
-                    @endif
+                    </template>
                 </div>
 
                 <div class="flex-1 min-w-0 space-y-2 text-center sm:text-left">
                     <label class="block text-xs font-bold text-white">Upload Custom Farm Crest / Logo</label>
                     <p class="text-[11px] text-slate-400 leading-relaxed">
-                        Customize your farm's visual brand across the public welcome page, live stocklist catalog, and printed receipts. Recommended square ratio (PNG, JPG, SVG, WebP, max 4MB).
+                        Customize your farm's visual brand across the public welcome page, live stocklist catalog, and printed receipts. Supports PNG, JPG, SVG, WebP, GIF (up to 20MB).
                     </p>
                     <div class="pt-1 flex flex-col sm:flex-row items-center gap-3">
-                        <input type="file" name="farm_logo" accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                               class="text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-cyan-950 file:text-cyan-300 hover:file:bg-cyan-900 transition">
+                        <input type="file" name="farm_logo" accept="image/*,.svg"
+                               @change="const file = $event.target.files[0]; if (file) { logoPreview = URL.createObjectURL(file); }"
+                               class="text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-cyan-950 file:text-cyan-300 hover:file:bg-cyan-900 transition cursor-pointer">
                         @if ($user->farm_logo_path)
                             <label class="inline-flex items-center text-xs text-rose-400 hover:text-rose-300 cursor-pointer">
-                                <input type="checkbox" name="remove_farm_logo" value="1" class="rounded bg-slate-950 border-slate-700 text-rose-500 focus:ring-0 mr-1.5">
+                                <input type="checkbox" name="remove_farm_logo" value="1" 
+                                       @change="if ($event.target.checked) { logoPreview = null; }"
+                                       class="rounded bg-slate-950 border-slate-700 text-rose-500 focus:ring-0 mr-1.5">
                                 <span>Revert to default AquaForge crest</span>
                             </label>
                         @endif
