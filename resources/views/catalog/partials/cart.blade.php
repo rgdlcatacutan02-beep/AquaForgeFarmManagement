@@ -181,6 +181,126 @@
     </div>
 </div>
 
+
+<!-- BUYER CARE & ACCLIMATION GUIDE MODAL -->
+<div x-show="guideModalOpen" x-cloak 
+     class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/85 backdrop-blur-sm"
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="opacity-0 scale-95"
+     x-transition:enter-end="opacity-100 scale-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="opacity-100 scale-100"
+     x-transition:leave-end="opacity-0 scale-95">
+    <div @click.away="guideModalOpen = false" 
+         class="relative bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] shadow-2xl flex flex-col overflow-hidden">
+        
+        <!-- Modal Header -->
+        <div class="px-5 py-4 border-b border-slate-800 bg-slate-950/80 flex items-center justify-between flex-shrink-0">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-cyan-950/80 border border-cyan-800/80 flex items-center justify-center text-cyan-400 flex-shrink-0">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        Buyer Care &amp; Acclimation Guide
+                        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">Best Practices</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-400">Step-by-step instructions to acclimate your new live specimens safely.</p>
+                </div>
+            </div>
+            <button @click="guideModalOpen = false" 
+                    class="p-1.5 text-slate-400 hover:text-white rounded-lg bg-slate-800/80 border border-slate-700/80 transition focus:outline-none"
+                    title="Close">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body (Scrollable with Touch Support) -->
+        <div class="p-5 overflow-y-auto space-y-4 text-xs text-slate-300 touch-scroll overscroll-contain flex-1">
+            
+            <!-- Step 1: Temperature Equalization -->
+            <div class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-2">
+                <div class="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider">
+                    <span class="w-5 h-5 rounded-full bg-cyan-950 border border-cyan-700 text-cyan-300 flex items-center justify-center font-mono text-[10px]">1</span>
+                    <span>Float the Sealed Bag (15 &ndash; 20 Mins)</span>
+                </div>
+                <p class="text-[11px] text-slate-300 leading-relaxed pl-7">
+                    Float the unopened transport bag directly in your receiving or quarantine tank. This equalizes the transport bag water temperature with your tank water without exposing the fish to sudden thermal shock.
+                </p>
+            </div>
+
+            <!-- Step 2: Drip Acclimation / Chemistry Adjustment -->
+            <div class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-2">
+                <div class="flex items-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider">
+                    <span class="w-5 h-5 rounded-full bg-emerald-950 border border-emerald-700 text-emerald-300 flex items-center justify-center font-mono text-[10px]">2</span>
+                    <span>Water Chemistry Equalization (30 &ndash; 45 Mins)</span>
+                </div>
+                <p class="text-[11px] text-slate-300 leading-relaxed pl-7">
+                    Cut the top of the bag open and roll the rim down to float, or transfer the fish and bag water into a clean container. Slowly add small amounts of your tank water (1/4 cup every 5 minutes, or a slow airline drip of 2–3 drops per second) until the volume has doubled. This matches pH, hardness, and TDS gradually.
+                </p>
+            </div>
+
+            <!-- Step 3: Gentle Transfer -->
+            <div class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-2">
+                <div class="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wider">
+                    <span class="w-5 h-5 rounded-full bg-amber-950 border border-amber-700 text-amber-300 flex items-center justify-center font-mono text-[10px]">3</span>
+                    <span>Net the Fish &bull; Never Pour Bag Water</span>
+                </div>
+                <p class="text-[11px] text-slate-300 leading-relaxed pl-7">
+                    Gently capture the fish with a soft net or specimen cup and release only the fish into your tank. <strong class="text-amber-300">Never pour transport bag water into your main aquarium</strong>, as it contains ammonia, waste, and shipping stress hormones. Discard the bag water down the drain.
+                </p>
+            </div>
+
+            <!-- Step 4: Lights & Feeding -->
+            <div class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-2">
+                <div class="flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-wider">
+                    <span class="w-5 h-5 rounded-full bg-indigo-950 border border-indigo-700 text-indigo-300 flex items-center justify-center font-mono text-[10px]">4</span>
+                    <span>Lights Off &amp; First 24 Hours</span>
+                </div>
+                <p class="text-[11px] text-slate-300 leading-relaxed pl-7">
+                    Keep tank lights dimmed or turned off for the first 12–24 hours to reduce travel anxiety and let the specimen explore quietly. Avoid feeding on the first day; start with small pinches of live baby brine shrimp (artemia) or high-grade flake/pellet food the following day once settled.
+                </p>
+            </div>
+
+            <!-- Recommended Parameters & Guarantee -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div class="p-3 rounded-xl bg-cyan-950/30 border border-cyan-800/50 space-y-1">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+                        <i data-lucide="droplet" class="w-3.5 h-3.5"></i>
+                        Recommended Water Parameters
+                    </span>
+                    <ul class="text-[10px] text-slate-300 space-y-0.5 font-mono">
+                        <li>&bull; Temperature: 25&deg;C &ndash; 28&deg;C (77&deg;F &ndash; 82&deg;F)</li>
+                        <li>&bull; pH Range: 6.5 &ndash; 7.5 (Neutral / Stable)</li>
+                        <li>&bull; Ammonia &amp; Nitrite: 0 ppm (Cycled Filter)</li>
+                    </ul>
+                </div>
+
+                <div class="p-3 rounded-xl bg-emerald-950/30 border border-emerald-800/50 space-y-1">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                        Live Arrival Guarantee (DOA Policy)
+                    </span>
+                    <p class="text-[10px] text-slate-300 leading-normal">
+                        All our fish are guaranteed alive on arrival. In the rare event of transit mortality, please take a clear unboxing photo/video of the unopened bag within 1 hour of delivery and message us directly on Messenger for replacement or refund.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-5 py-3.5 border-t border-slate-800 bg-slate-950/90 flex items-center justify-between flex-shrink-0">
+            <span class="text-[10px] text-slate-500 font-mono">AquaForge Quality Standard &bull; Happy Fishkeeping!</span>
+            <button type="button" @click="guideModalOpen = false" 
+                    class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-md shadow-cyan-950 transition">
+                Got It, Close Guide
+            </button>
+        </div>
+
+    </div>
+</div>
+
 <!-- CART SCRIPT -->
 <script>
     function catalogCart() {
@@ -189,6 +309,16 @@
             toastMessage: '',
             fbModalOpen: false,
             guideModalOpen: false,
+
+            init() {
+                this.$watch('guideModalOpen', val => {
+                    if (val) setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 50);
+                });
+                this.$watch('cartOpen', val => {
+                    if (val) setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 50);
+                });
+            },
+
             cartOpen: false,
             buyerName: '',
             buyerLocation: '',

@@ -57,6 +57,12 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
+                <button type="button" @click="guideModalOpen = true" 
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-800/60 text-xs font-semibold transition">
+                    <i data-lucide="book-open" class="w-3.5 h-3.5 text-cyan-400"></i>
+                    <span class="hidden sm:inline">Buyer Care Guide</span>
+                    <span class="sm:hidden">Care</span>
+                </button>
                 <button type="button" @click="cartOpen = true" 
                         class="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/70 text-xs font-bold transition shadow-sm">
                     <i data-lucide="shopping-cart" class="w-3.5 h-3.5 text-emerald-400"></i>
@@ -250,6 +256,12 @@
                     @endphp
 
                     <div class="space-y-2">
+                        <button type="button" @click="guideModalOpen = true" 
+                                class="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-cyan-300 border border-cyan-800/50 text-xs font-semibold transition">
+                            <i data-lucide="book-open" class="w-3.5 h-3.5 text-cyan-400"></i>
+                            <span>Buyer Care &amp; Acclimation Guide</span>
+                        </button>
+
                         <button type="button" @click="copyText('{{ url()->current() }}')" 
                                 class="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition">
                             <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
