@@ -148,23 +148,38 @@
                 </div>
             </div>
 
-            <!-- Share to Facebook Post Box -->
-            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-lg space-y-2.5 max-w-sm w-full">
+            <!-- Customer Inquiry & Support Card -->
+            <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-lg space-y-3 max-w-sm w-full">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-white flex items-center gap-1.5">
-                        <i data-lucide="facebook" class="w-3.5 h-3.5 text-blue-400"></i>
-                        Post on Facebook Groups
+                        <i data-lucide="message-circle" class="w-3.5 h-3.5 text-blue-400"></i>
+                        Ready to Order or Have Questions?
                     </span>
-                    <span class="text-[10px] text-slate-400 font-mono">1-Click</span>
+                    <span class="text-[10px] text-emerald-400 font-semibold px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-800/60">Live Stock</span>
                 </div>
-                <p class="text-[11px] text-slate-400">
-                    Selling on FB aquarium groups? Copy our pre-formatted post with direct Messenger and stocklist links!
+                <p class="text-[11px] text-slate-400 leading-relaxed">
+                    Same-day delivery via Lalamove / Grab Express & provincial bus shipping. Chat with our farm team on Messenger for reservations and pairing advice!
                 </p>
-                <button type="button" @click="fbModalOpen = true" 
-                        class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-sm transition">
-                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                    <span>Generate Facebook Post</span>
-                </button>
+                @if ($owner && $owner->messenger_url)
+                    <a href="{{ $owner->messenger_url }}" target="_blank" 
+                       class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-sm transition">
+                        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                        <span>Chat Directly on Messenger</span>
+                    </a>
+                @endif
+
+                @auth
+                    @if (Auth::user()->isAdmin())
+                        <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+                            <span class="text-[10px] uppercase font-bold text-cyan-400">Admin Seller Tool</span>
+                            <button type="button" @click="fbModalOpen = true" 
+                                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-semibold border border-slate-700 transition">
+                                <i data-lucide="share-2" class="w-3 h-3 text-cyan-400"></i>
+                                <span>Copy FB Group Post</span>
+                            </button>
+                        </div>
+                    @endif
+                @endauth
             </div>
         </div>
     </div>
