@@ -22,6 +22,7 @@
       x-data="{ 
           copiedToast: false,
           fbModalOpen: false,
+          guideModalOpen: false,
           copyText(txt) {
               navigator.clipboard.writeText(txt).then(() => {
                   this.copiedToast = true;
@@ -80,14 +81,37 @@
                     <span class="hidden sm:inline">Copy Catalog Link</span>
                 </button>
                 @auth
-                    <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white text-xs font-medium border border-slate-700">
-                        <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
-                        <span class="hidden sm:inline">Farm Admin</span>
+                    @if (Auth::user()->isAdmin())
+                        <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-sm transition">
+                            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+                            <span class="hidden sm:inline">Farm Admin</span>
+                        </a>
+                    @else
+                        <div class="flex items-center gap-2 pl-2 border-l border-slate-800">
+                            <span class="text-xs text-slate-400 hidden sm:inline">{{ Auth::user()->name }}</span>
+                            <form method="POST" action="{{ route('logout') }}" class="inline">
+                                @csrf
+                                <button type="submit" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-xs font-medium border border-slate-700">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700">
+                        <span>Staff Login</span>
                     </a>
                 @endauth
             </div>
         </div>
     </header>
+
+    @if (session('notice'))
+        <div class="bg-amber-950/80 border-b border-amber-800/80 px-4 py-3 text-amber-300 text-xs flex items-center justify-center gap-2 text-center">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400 flex-shrink-0"></i>
+            <span>{{ session('notice') }}</span>
+        </div>
+    @endif
 
     <!-- FARM HERO SPOTLIGHT -->
     <div class="relative bg-gradient-to-b from-slate-900 via-slate-900/60 to-slate-950 border-b border-slate-800/80 py-8 px-4 sm:px-6 lg:px-8">
@@ -116,6 +140,11 @@
                         <i data-lucide="truck" class="w-3 h-3 text-purple-400"></i>
                         Lalamove &bull; Grab &bull; Busway
                     </span>
+                    <button type="button" @click="guideModalOpen = true" 
+                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-800/60 transition">
+                        <i data-lucide="book-open" class="w-3 h-3 text-cyan-400"></i>
+                        Buyer Care & Acclimation Guide
+                    </button>
                 </div>
             </div>
 
@@ -463,5 +492,69 @@
             lucide.createIcons();
         });
     </script>
+
+    <!-- MODAL: Buyer Acclimation & Care Guide -->
+    <div x-show="guideModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md overflow-y-auto">
+        <div @click.away="guideModalOpen = false" class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 my-8">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                    <span class="p-1.5 rounded-lg bg-cyan-950 text-cyan-400 border border-cyan-800">
+                        <i data-lucide="heart" class="w-4 h-4"></i>
+                    </span>
+                    <h3 class="text-base font-bold text-white">Buyer Care & Acclimation Guide</h3>
+                </div>
+                <button @click="guideModalOpen = false" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+
+            <div class="space-y-4 text-xs text-slate-300 leading-relaxed max-h-[65vh] overflow-y-auto pr-2">
+                <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-cyan-300 flex items-center gap-1.5">
+                        <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                        Step 1: Temperature Acclimation (Float Bag 15-20 Mins)
+                    </h4>
+                    <p class="text-slate-400">
+                        Float the unopened sealed fish bag in your prepared aquarium for 15 to 20 minutes so the water temperature equalizes gradually. Avoid placing under direct strong aquarium lights.
+                    </p>
+                </div>
+
+                <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-cyan-300 flex items-center gap-1.5">
+                        <i data-lucide="droplet" class="w-3.5 h-3.5"></i>
+                        Step 2: Water Chemistry Equalization (Drip / Cup Method)
+                    </h4>
+                    <p class="text-slate-400">
+                        Open the bag and slowly add a small cup (about 20-30ml) of your tank water into the bag every 5 minutes for 20 minutes. This prevents osmotic and pH shock.
+                    </p>
+                </div>
+
+                <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-cyan-300 flex items-center gap-1.5">
+                        <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                        Step 3: Gentle Release (Do Not Pour Bag Water)
+                    </h4>
+                    <p class="text-slate-400">
+                        Gently net your fish out of the shipping bag and release them into your aquarium. Discard the shipping bag water in the sink.
+                    </p>
+                </div>
+
+                <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-amber-300 flex items-center gap-1.5">
+                        <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
+                        First 24 Hours Protocol
+                    </h4>
+                    <p class="text-slate-400">
+                        Keep aquarium lights dimmed or turned off for the first 12 hours to reduce transport stress. <strong>Do not feed for the first 12-24 hours</strong> until the fish has fully settled.
+                    </p>
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800 flex justify-end">
+                <button type="button" @click="guideModalOpen = false" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold rounded-lg shadow-sm">
+                    Got it, thanks!
+                </button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

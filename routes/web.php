@@ -23,11 +23,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Public Showcase & Available Fish Catalog (For Facebook Groups, Messenger & Marketplace)
+// Public Showcase & Available Fish Catalog (For Customers, Facebook Groups & Messenger Inquiries)
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{livestock}', [CatalogController::class, 'show'])->name('catalog.show');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+// Internal Farm Operations & Husbandry Dashboard (Restricted strictly to Farm Admin)
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Livestock & Farm Tanks
@@ -53,19 +54,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('feeding', FeedingLogController::class);
     Route::resource('maintenance', MaintenanceLogController::class);
 
-    // Business
+    // Business & Financial Operations
     Route::resource('inventory', InventoryItemController::class);
     Route::resource('sales', SaleController::class);
     Route::resource('customers', CustomerController::class);
     Route::resource('expenses', ExpenseController::class);
 
-    // Reports
+    // Farm Reports
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 
-    // Profile Settings
+    // Farm Owner Payment & Social Settings
+    Route::patch('/profile/payment', [ProfileController::class, 'updatePayment'])->name('profile.payment.update');
+});
+
+// User Profile Settings (Accessible to all authenticated users)
+Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::patch('/profile/payment', [ProfileController::class, 'updatePayment'])->name('profile.payment.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

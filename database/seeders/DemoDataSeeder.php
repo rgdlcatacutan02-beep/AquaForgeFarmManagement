@@ -30,6 +30,7 @@ class DemoDataSeeder extends Seeder
             ['email' => 'admin@aquaforge.test'],
             [
                 'name' => 'AquaForge Admin',
+                'role' => 'admin',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
             ]

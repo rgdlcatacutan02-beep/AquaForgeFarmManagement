@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 #[Fillable([
     'name',
     'email',
+    'role',
     'password',
     'farm_name',
     'farm_location',
@@ -64,5 +65,15 @@ class User extends Authenticatable
         }
         $handle = ltrim($handle, '@');
         return 'https://m.me/' . $handle;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isCustomer(): bool
+    {
+        return $this->role === 'customer';
     }
 }
