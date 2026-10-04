@@ -42,19 +42,21 @@
                 </div>
             </a>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                 <a href="{{ route('catalog.index') }}" 
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-teal-500 hover:from-cyan-500 hover:to-teal-400 text-slate-950 font-extrabold text-xs shadow-lg shadow-cyan-950 transition transform hover:-translate-y-0.5">
+                   class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-teal-500 hover:from-cyan-500 hover:to-teal-400 text-slate-950 font-extrabold text-xs shadow-lg shadow-cyan-950 transition transform hover:-translate-y-0.5">
                     <i data-lucide="store" class="w-4 h-4 text-slate-950"></i>
-                    <span>Browse Fish Catalog</span>
+                    <span class="hidden sm:inline">Browse Fish Catalog</span>
+                    <span class="sm:hidden">Catalog</span>
                 </a>
 
                 @auth
                     @if (Auth::user()->isAdmin())
                         <a href="{{ route('dashboard') }}" 
-                           class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-cyan-800/60 transition shadow-sm">
+                           class="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 text-xs font-bold rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-cyan-800/60 transition shadow-sm">
                             <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 text-cyan-400"></i>
-                            <span>Farm Dashboard</span>
+                            <span class="hidden sm:inline">Farm Dashboard</span>
+                            <span class="sm:hidden">Admin</span>
                         </a>
                     @endif
                 @endauth
@@ -91,7 +93,7 @@
             </div>
 
             <!-- Farm Branding Titles -->
-            <h1 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight mt-3">
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight mt-3 break-words">
                 {{ $owner->farm_name ?? 'AquaForge Aquatic Farm' }}
             </h1>
 

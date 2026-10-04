@@ -1,11 +1,11 @@
-<aside class="flex flex-col flex-shrink-0 w-64 bg-slate-900 border-r border-slate-800 text-slate-300 min-h-screen">
+<aside class="flex flex-col flex-shrink-0 w-64 md:w-64 max-w-full bg-slate-900 border-r border-slate-800 text-slate-300 h-full max-h-screen overflow-hidden">
     @php
         $sidebarUser = auth()->user();
         $farmName = $sidebarUser?->farm_name ?: 'AquaForge';
         $farmLogo = $sidebarUser?->farm_logo_url;
     @endphp
     <!-- Brand Header -->
-    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-800/80 bg-slate-950/40">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-800/80 bg-slate-950/40 flex-shrink-0">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group min-w-0 w-full">
             @if($farmLogo)
                 <img src="{{ $farmLogo }}" alt="{{ $farmName }} Logo" class="w-10 h-10 object-contain rounded-lg p-1 bg-slate-900 border border-cyan-500/30 shadow-md shadow-cyan-950/50 flex-shrink-0">
@@ -23,8 +23,8 @@
         </a>
     </div>
 
-    <!-- Navigation List -->
-    <nav class="flex-1 px-3 py-4 space-y-6 overflow-y-auto text-sm">
+    <!-- Navigation List (Scrollable on Desktop & Mobile) -->
+    <nav class="flex-1 min-h-0 px-3 py-4 space-y-6 overflow-y-auto overscroll-contain text-sm touch-scroll">
         <!-- Main / Dashboard -->
         <div>
             <a href="{{ route('dashboard') }}" 
@@ -161,7 +161,7 @@
     </nav>
 
     <!-- Platform Engine Watermark -->
-    <div class="px-4 py-2 border-t border-slate-800/60 bg-slate-950/80 text-center">
+    <div class="px-4 py-2 border-t border-slate-800/60 bg-slate-950/80 text-center flex-shrink-0">
         <div class="text-[10px] text-slate-500 font-mono tracking-tight flex items-center justify-center gap-1.5">
             <i data-lucide="shield-check" class="w-3 h-3 text-cyan-500/70"></i>
             <span>AquaForge System &bull; rgdlcTech</span>
@@ -169,7 +169,7 @@
     </div>
 
     <!-- User Profile Bottom Bar -->
-    <div class="p-3 border-t border-slate-800/80 bg-slate-950/40">
+    <div class="p-3 border-t border-slate-800/80 bg-slate-950/40 flex-shrink-0">
         <div class="flex items-center justify-between px-2 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800">
             <div class="flex items-center gap-2.5 min-w-0">
                 <div class="w-8 h-8 rounded-full bg-cyan-900/60 text-cyan-300 flex items-center justify-center font-bold text-xs uppercase border border-cyan-700/50 flex-shrink-0">

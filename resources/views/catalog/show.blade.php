@@ -328,6 +328,19 @@
         <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }} &bull; Powered by <span class="text-cyan-400 font-semibold">AquaForge System</span> &bull; Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span></p>
     </footer>
 
+        <!-- Mobile Floating Cart Pill -->
+    <div x-show="cartCount > 0" x-cloak 
+         class="fixed bottom-4 inset-x-4 z-40 sm:hidden">
+        <button type="button" @click="cartOpen = true" 
+                class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-emerald-600 text-white font-extrabold text-sm shadow-2xl shadow-emerald-950 transition transform active:scale-98">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                <span>Review Order (<span x-text="cartCount"></span> fish)</span>
+            </div>
+            <span class="font-mono bg-emerald-700 px-2.5 py-0.5 rounded-lg text-xs" x-text="'\&#8369;' + cartTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })"></span>
+        </button>
+    </div>
+
     @include('catalog.partials.cart')
 
     <script>

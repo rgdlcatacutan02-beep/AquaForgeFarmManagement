@@ -37,58 +37,59 @@
 
     <!-- TOP NAV / BANNER -->
     <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <a href="{{ route('catalog.index') }}" class="flex items-center gap-2.5">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <a href="{{ route('catalog.index') }}" class="flex items-center gap-2 min-w-0">
                     @if($owner && $owner->farm_logo_url)
-                        <img src="{{ $owner->farm_logo_url }}" alt="{{ $owner->farm_name ?? 'Farm' }} Logo" class="w-10 h-10 object-contain rounded-xl p-1 bg-slate-900 border border-cyan-800/80 shadow-md">
+                        <img src="{{ $owner->farm_logo_url }}" alt="{{ $owner->farm_name ?? 'Farm' }} Logo" class="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-xl p-0.5 bg-slate-900 border border-cyan-800/80 shadow-md flex-shrink-0">
                     @else
-                        <span class="p-2 rounded-xl bg-cyan-950 text-cyan-400 border border-cyan-800 shadow-inner">
-                            <i data-lucide="fish" class="w-5 h-5"></i>
+                        <span class="p-1.5 sm:p-2 rounded-xl bg-cyan-950 text-cyan-400 border border-cyan-800 shadow-inner flex-shrink-0">
+                            <i data-lucide="fish" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </span>
                     @endif
-                    <div>
-                        <div class="text-sm sm:text-base font-extrabold text-white tracking-tight flex items-center gap-2">
-                            <span>{{ $owner->farm_name ?? 'AquaForge Farm' }}</span>
-                            <span class="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 font-semibold">Live Stock</span>
+                    <div class="min-w-0 truncate">
+                        <div class="text-xs sm:text-base font-extrabold text-white tracking-tight flex items-center gap-1.5 truncate">
+                            <span class="truncate">{{ $owner->farm_name ?? 'AquaForge Farm' }}</span>
+                            <span class="hidden sm:inline-block text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/60 font-semibold">Live Stock</span>
                         </div>
-                        <p class="text-[11px] text-slate-400 flex items-center gap-2">
-                            <span class="flex items-center gap-1">
-                                <i data-lucide="map-pin" class="w-3 h-3 text-cyan-400"></i>
-                                <span>{{ $owner->farm_location ?? 'Philippines' }}</span>
+                        <p class="text-[10px] sm:text-[11px] text-slate-400 flex items-center gap-1.5 truncate">
+                            <span class="flex items-center gap-1 truncate">
+                                <i data-lucide="map-pin" class="w-3 h-3 text-cyan-400 flex-shrink-0"></i>
+                                <span class="truncate">{{ $owner->farm_location ?? 'Philippines' }}</span>
                             </span>
-                            <span class="text-slate-600">&bull;</span>
-                            <span class="text-[10px] text-cyan-400 font-mono tracking-tight font-semibold">Powered by AquaForge</span>
+                            <span class="text-slate-600 hidden sm:inline">&bull;</span>
+                            <span class="text-[10px] text-cyan-400 font-mono tracking-tight font-semibold hidden sm:inline">Powered by AquaForge</span>
                         </p>
                     </div>
                 </a>
             </div>
 
             <!-- Quick Action Buttons -->
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
                 <!-- Order Cart Button -->
                 <button type="button" @click="cartOpen = true" 
-                        class="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/70 text-xs font-bold transition shadow-sm">
+                        class="relative inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-lg bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/70 text-xs font-bold transition shadow-sm">
                     <i data-lucide="shopping-cart" class="w-3.5 h-3.5 text-emerald-400"></i>
-                    <span>Order List</span>
-                    <span x-show="cartCount > 0" x-text="cartCount" class="ml-1 px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-extrabold"></span>
+                    <span class="hidden sm:inline">Order List</span>
+                    <span x-show="cartCount > 0" x-text="cartCount" class="ml-0.5 sm:ml-1 px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-extrabold"></span>
                 </button>
                 @if ($owner && $owner->messenger_url)
                     <a href="{{ $owner->messenger_url }}" target="_blank" 
-                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-sm transition">
+                       class="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-sm transition">
                         <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
-                        <span class="hidden sm:inline">Chat on Messenger</span>
-                        <span class="sm:hidden">Messenger</span>
+                        <span class="hidden md:inline">Chat on Messenger</span>
+                        <span class="md:hidden hidden sm:inline">Messenger</span>
                     </a>
                 @endif
                 <button type="button" @click="copyText('{{ route('catalog.index') }}')" 
-                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition">
+                        class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition"
+                        title="Copy Link">
                     <i data-lucide="share-2" class="w-3.5 h-3.5 text-cyan-400"></i>
-                    <span class="hidden sm:inline">Copy Catalog Link</span>
+                    <span class="hidden md:inline">Copy Catalog Link</span>
                 </button>
                 @auth
                     @if (Auth::user()->isAdmin())
-                        <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-sm transition">
+                        <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold shadow-sm transition">
                             <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
                             <span class="hidden sm:inline">Farm Admin</span>
                         </a>
@@ -508,6 +509,19 @@
     <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
         <p>&copy; {{ date('Y') }} {{ $owner->farm_name ?? 'AquaForge' }} &bull; Powered by <span class="text-cyan-400 font-semibold">AquaForge System</span> &bull; Built with pride by <span class='text-cyan-400 font-semibold'>rgdlcTech</span></p>
     </footer>
+
+        <!-- Mobile Floating Cart Pill -->
+    <div x-show="cartCount > 0" x-cloak 
+         class="fixed bottom-4 inset-x-4 z-40 sm:hidden">
+        <button type="button" @click="cartOpen = true" 
+                class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-emerald-600 text-white font-extrabold text-sm shadow-2xl shadow-emerald-950 transition transform active:scale-98">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                <span>Review Order (<span x-text="cartCount"></span> fish)</span>
+            </div>
+            <span class="font-mono bg-emerald-700 px-2.5 py-0.5 rounded-lg text-xs" x-text="'?' + cartTotal.toLocaleString('en-US', { minimumFractionDigits: 2 })"></span>
+        </button>
+    </div>
 
     @include('catalog.partials.cart')
 

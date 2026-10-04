@@ -32,7 +32,7 @@
     <body class="h-full bg-slate-950 text-slate-100 antialiased" x-data="{ mobileNavOpen: false, ...tankScanner() }">
         <div class="flex h-screen overflow-hidden">
             <!-- Desktop Sidebar -->
-            <div class="hidden md:flex md:flex-shrink-0">
+            <div class="hidden md:flex md:flex-shrink-0 h-full max-h-screen">
                 @include('layouts.sidebar')
             </div>
 
@@ -41,7 +41,9 @@
                  x-cloak 
                  class="relative z-50 md:hidden" 
                  role="dialog" 
-                 aria-modal="true">
+                 aria-modal="true"
+                 @keydown.escape.window="mobileNavOpen = false"
+                 x-init="$watch('mobileNavOpen', value => { if (value && window.lucide) { $nextTick(() => window.lucide.createIcons()); } })">
                 <!-- Backdrop -->
                 <div x-show="mobileNavOpen" 
                      x-transition:enter="transition-opacity ease-linear duration-200"
@@ -54,7 +56,7 @@
                      class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
 
                 <!-- Drawer Content -->
-                <div class="fixed inset-0 flex z-50">
+                <div class="fixed inset-0 flex z-50 pointer-events-none">
                     <div x-show="mobileNavOpen"
                          x-transition:enter="transition ease-in-out duration-200 transform"
                          x-transition:enter-start="-translate-x-full"
@@ -62,11 +64,13 @@
                          x-transition:leave="transition ease-in-out duration-200 transform"
                          x-transition:leave-start="translate-x-0"
                          x-transition:leave-end="-translate-x-full"
-                         class="relative flex-1 flex flex-col max-w-xs w-full bg-slate-900 shadow-2xl">
+                         class="pointer-events-auto relative flex-1 flex flex-col max-w-[280px] sm:max-w-xs w-full bg-slate-900 shadow-2xl h-full max-h-screen overflow-hidden">
                         <!-- Close button -->
-                        <div class="absolute top-3 right-3">
-                            <button @click="mobileNavOpen = false" class="p-2 text-slate-400 hover:text-white rounded-lg focus:outline-none">
-                                <i data-lucide="x" class="w-5 h-5"></i>
+                        <div class="absolute top-3 right-3 z-30">
+                            <button @click="mobileNavOpen = false" 
+                                    class="p-1.5 text-slate-300 hover:text-white rounded-lg bg-slate-800/90 border border-slate-700/80 shadow focus:outline-none"
+                                    title="Close Menu">
+                                <i data-lucide="x" class="w-4 h-4"></i>
                             </button>
                         </div>
                         @include('layouts.sidebar')
@@ -117,7 +121,7 @@
                 </header>
 
                 <!-- Page Body -->
-                <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-950 text-slate-100">
+                <main class="flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-6 lg:p-8 bg-slate-950 text-slate-100 touch-scroll">
                     <!-- Session Flash Messages -->
                     @if (session('success'))
                         <div class="mb-6 p-4 rounded-xl bg-emerald-950/40 border border-emerald-800/60 text-emerald-300 flex items-center gap-3">
