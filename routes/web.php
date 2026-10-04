@@ -20,7 +20,22 @@ use App\Http\Controllers\WaterLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    $owner = null;
+    $featuredFish = collect();
+
+    if (\Illuminate\Support\Facades\Schema::hasTable('users')) {
+        $owner = \App\Models\User::where('role', 'admin')->first() ?? \App\Models\User::first();
+    }
+
+    if (\Illuminate\Support\Facades\Schema::hasTable('livestock')) {
+        $featuredFish = \App\Models\Livestock::with(['species', 'tank'])
+            ->where('status', 'AVAILABLE')
+            ->latest()
+            ->take(4)
+            ->get();
+    }
+
+    return view('welcome', compact('owner', 'featuredFish'));
 });
 
 // Public Showcase & Available Fish Catalog (For Customers, Facebook Groups & Messenger Inquiries)
