@@ -25,7 +25,7 @@ Route::get('/', function () {
     $featuredFish = collect();
 
     if (\Illuminate\Support\Facades\Schema::hasTable('users')) {
-        $owner = \App\Models\User::where('role', 'admin')->first() ?? \App\Models\User::first();
+        $owner = \App\Models\User::getFarmOwner();
     }
 
     if (\Illuminate\Support\Facades\Schema::hasTable('livestock')) {

@@ -328,7 +328,7 @@
 
         <!-- SOCIAL MEDIA FISH CARD & FACEBOOK POST MODAL -->
         @php
-            $farmOwner = auth()->user() ?? \App\Models\User::first();
+            $farmOwner = \App\Models\User::getFarmOwner();
             $catalogSingleUrl = route('catalog.show', $livestock);
             $messengerDeepUrl = $farmOwner && $farmOwner->messenger_username ? "https://m.me/" . ltrim($farmOwner->messenger_username, '@') : "";
             $speciesName = $livestock->species?->name ?? 'Fish';

@@ -30,7 +30,7 @@
     <div class="max-w-3xl mx-auto">
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 sm:p-8 shadow-sm space-y-6 print:border-none print:p-0 print:bg-white print:text-black">
             @php
-                $farmUser = auth()->user() ?? \App\Models\User::first();
+                $farmUser = \App\Models\User::getFarmOwner();
                 $farmName = $farmUser?->farm_name ?: 'AQUAFORGE';
                 $farmLogo = $farmUser?->farm_logo_url;
             @endphp
@@ -165,7 +165,7 @@
 
             <!-- PHILIPPINE SCAN-TO-PAY BOX (GCash / Maya) -->
             @php
-                $farmUser = auth()->user() ?? \App\Models\User::first();
+                $farmUser = \App\Models\User::getFarmOwner();
             @endphp
             @if ($farmUser && ($farmUser->gcash_number || $farmUser->maya_number || $farmUser->gcash_qr_path || $farmUser->bank_details))
                 <div class="mt-6 p-4 rounded-xl bg-slate-950/70 print:bg-slate-50 border border-slate-800 print:border-slate-300" x-data="{ copiedNumber: false }">

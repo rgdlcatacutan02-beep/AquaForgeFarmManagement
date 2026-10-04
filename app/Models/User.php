@@ -82,4 +82,26 @@ class User extends Authenticatable
     {
         return $this->role === 'customer';
     }
+
+    /**
+     * Get the active primary farm owner profile.
+     * Always resolves the configured admin farm profile or currently logged in admin.
+     */
+    public static function getFarmOwner(): ?self
+    {
+        if (auth()->check() && auth()->user()->isAdmin()) {
+            return auth()->user();
+        }
+
+        return self::where('role', 'admin')
+            ->where(function ($q) {
+                $q->whereNotNull('farm_name')->where('farm_name', '!=', '')
+                  ->orWhereNotNull('farm_logo_path');
+            })
+            ->latest('updated_at')
+            ->first()
+            ?? self::where('role', 'admin')->latest('id')->first()
+            ?? self::first();
+    }
+
 }

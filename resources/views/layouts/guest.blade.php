@@ -18,7 +18,7 @@
     <body class="min-h-full bg-slate-950 text-slate-100 antialiased flex flex-col justify-center items-center p-6 selection:bg-cyan-500 selection:text-white">
         <div class="w-full max-w-md space-y-6">
             @php
-                $adminUser = \App\Models\User::first();
+                $adminUser = \App\Models\User::getFarmOwner();
                 $farmName = $adminUser?->farm_name ?: 'AquaForge';
                 $farmLogo = $adminUser?->farm_logo_url;
             @endphp

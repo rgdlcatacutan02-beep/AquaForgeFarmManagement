@@ -110,6 +110,23 @@ class ProfileController extends Controller
         unset($validated['farm_logo'], $validated['remove_farm_logo'], $validated['gcash_qr']);
         $user->update($validated);
 
+        // Synchronize farm branding across all admin records in the system
+        \App\Models\User::where('role', 'admin')->where('id', '!=', $user->id)->update([
+            'farm_name' => $user->farm_name,
+            'farm_location' => $user->farm_location,
+            'farm_logo_path' => $user->farm_logo_path,
+            'messenger_username' => $user->messenger_username,
+            'facebook_page' => $user->facebook_page,
+            'contact_number' => $user->contact_number,
+            'gcash_name' => $user->gcash_name,
+            'gcash_number' => $user->gcash_number,
+            'gcash_qr_path' => $user->gcash_qr_path,
+            'maya_name' => $user->maya_name,
+            'maya_number' => $user->maya_number,
+            'bank_details' => $user->bank_details,
+            'shipping_notes' => $user->shipping_notes,
+        ]);
+
         return Redirect::route('profile.edit')->with('success', 'Farm branding, logo, Messenger, and payment settings updated successfully.');
     }
 }
